@@ -1,0 +1,867 @@
+Given an array of integers, return indices of the two numbers such that they add up to a specific target.
+
+You may assume that each input would have exactly one solution, and you may not use the same element twice.
+
+
+Example:
+
+Given nums = [2, 7, 11, 15], target = 9,
+
+Because nums[0] + nums[1] = 2 + 7 = 9,
+return [0, 1].
+
+You are given two non-empty linked lists representing two non-negative integers. The digits are stored in reverse order and each of their nodes contain a single digit. Add the two numbers and return it as a linked list.
+
+You may assume the two numbers do not contain any leading zero, except the number 0 itself.
+
+
+Input: (2 -> 4 -> 3) + (5 -> 6 -> 4)
+Output: 7 -> 0 -> 8Given a string, find the length of the longest substring without repeating characters.
+
+Examples:
+
+Given "abcabcbb", the answer is "abc", which the length is 3.
+
+Given "bbbbb", the answer is "b", with the length of 1.
+
+Given "pwwkew", the answer is "wke", with the length of 3. Note that the answer must be a substring, "pwke" is a subsequence and not a substring.'There are two sorted arrays nums1 and nums2 of size m and n respectively.
+
+Find the median of the two sorted arrays. The overall run time complexity should be O(log (m+n)).
+
+Example 1:
+
+nums1 = [1, 3]
+nums2 = [2]
+
+The median is 2.0
+
+
+
+Example 2:
+
+nums1 = [1, 2]
+nums2 = [3, 4]
+
+The median is (2 + 3)/2 = 2.5
+
+Given a string s, find the longest palindromic substring in s. You may assume that the maximum length of s is 1000.
+
+Example:
+
+Input: "babad"
+
+Output: "bab"
+
+Note: "aba" is also a valid answer.
+
+
+
+Example:
+
+Input: "cbbd"
+
+Output: "bb"
+
+'
+The string "PAYPALISHIRING" is written in a zigzag pattern on a given number of rows like this: (you may want to display this pattern in a fixed font for better legibility)
+
+P   A   H   N
+A P L S I I G
+Y   I   R
+
+
+And then read line by line: "PAHNAPLSIIGYIR"
+
+
+Write the code that will take a string and make this conversion given a number of rows:
+
+string convert(string text, int nRows);
+
+convert("PAYPALISHIRING", 3) should return "PAHNAPLSIIGYIR".
+'Reverse digits of an integer.
+
+
+Example1: x =  123, return  321
+Example2: x = -123, return -321
+
+
+click to show spoilers.
+
+Have you thought about this?
+
+Here are some good questions to ask before coding. Bonus points for you if you have already thought through this!
+
+If the integer's last digit is 0, what should the output be? ie, cases such as 10, 100.
+
+Did you notice that the reversed integer might overflow? Assume the input is a 32-bit integer, then the reverse of 1000000003 overflows. How should you handle such cases?
+
+For the purpose of this problem, assume that your function returns 0 when the reversed integer overflows.
+
+
+
+
+
+Note:
+The input is assumed to be a 32-bit signed integer. Your function should return 0 when the reversed integer overflows.
+Level up your coding skills and quickly land a job. This is the best place to expand your knowledge and get prepared for your next interview.Determine whether an integer is a palindrome. Do this without extra space.
+
+click to show spoilers.
+
+Some hints:
+
+Could negative integers be palindromes? (ie, -1)
+
+If you are thinking of converting the integer to string, note the restriction of using extra space.
+
+You could also try reversing an integer. However, if you have solved the problem "Reverse Integer", you know that the reversed integer might overflow. How would you handle such case?
+
+There is a more generic way of solving this problem.
+
+'Implement regular expression matching with support for '.' and '*'.
+
+
+'.' Matches any single character.
+'*' Matches zero or more of the preceding element.
+
+The matching should cover the entire input string (not partial).
+
+The function prototype should be:
+bool isMatch(const char *s, const char *p)
+
+Some examples:
+isMatch("aa","a") → false
+isMatch("aa","aa") → true
+isMatch("aaa","aa") → false
+isMatch("aa", "a*") → true
+isMatch("aa", ".*") → true
+isMatch("ab", ".*") → true
+isMatch("aab", "c*a*b") → true
+Given n non-negative integers a1, a2, ..., an, where each represents a point at coordinate (i, ai). n vertical lines are drawn such that the two endpoints of line i is at (i, ai) and (i, 0). Find two lines, which together with x-axis forms a container, such that the container contains the most water.
+
+Note: You may not slant the container and n is at least 2.
+Given an integer, convert it to a roman numeral.
+
+
+Input is guaranteed to be within the range from 1 to 3999.Given a roman numeral, convert it to an integer.
+
+Input is guaranteed to be within the range from 1 to 3999.Write a function to find the longest common prefix string amongst an array of strings.
+Given an array S of n integers, are there elements a, b, c in S such that a + b + c = 0? Find all unique triplets in the array which gives the sum of zero.
+
+Note: The solution set must not contain duplicate triplets.
+
+
+For example, given array S = [-1, 0, 1, 2, -1, -4],
+
+A solution set is:
+[
+  [-1, 0, 1],
+  [-1, -1, 2]
+]
+Given an array S of n integers, find three integers in S such that the sum is closest to a given number, target. Return the sum of the three integers. You may assume that each input would have exactly one solution.
+
+
+    For example, given array S = {-1 2 1 -4}, and target = 1.
+
+    The sum that is closest to the target is 2. (-1 + 2 + 1 = 2).
+Given a digit string, return all possible letter combinations that the number could represent.
+
+
+
+A mapping of digit to letters (just like on the telephone buttons) is given below.
+
+
+
+Input:Digit string "23"
+Output: ["ad", "ae", "af", "bd", "be", "bf", "cd", "ce", "cf"].
+
+
+
+Note:
+Although the above answer is in lexicographical order, your answer could be in any order you want.
+'Given an array S of n integers, are there elements a, b, c, and d in S such that a + b + c + d = target? Find all unique quadruplets in the array which gives the sum of target.
+
+Note: The solution set must not contain duplicate quadruplets.
+
+
+
+For example, given array S = [1, 0, -1, 0, -2, 2], and target = 0.
+
+A solution set is:
+[
+  [-1,  0, 0, 1],
+  [-2, -1, 1, 2],
+  [-2,  0, 0, 2]
+]
+Given a linked list, remove the nth node from the end of list and return its head.
+
+
+For example,
+
+
+   Given linked list: 1->2->3->4->5, and n = 2.
+
+   After removing the second node from the end, the linked list becomes 1->2->3->5.
+
+
+
+Note:
+Given n will always be valid.
+Try to do this in one pass.
+Given a string containing just the characters '(', ')', '{', '}', '[' and ']', determine if the input string is valid.
+
+The brackets must close in the correct order, "()" and "()[]{}" are all valid but "(]" and "([)]" are not.
+Merge two sorted linked lists and return it as a new list. The new list should be made by splicing together the nodes of the first two lists.
+Given n pairs of parentheses, write a function to generate all combinations of well-formed parentheses.
+
+
+
+For example, given n = 3, a solution set is:
+
+
+[
+  "((()))",
+  "(()())",
+  "(())()",
+  "()(())",
+  "()()()"
+]
+'
+Merge k sorted linked lists and return it as one sorted list. Analyze and describe its complexity.
+
+Given a linked list, swap every two adjacent nodes and return its head.
+
+
+
+For example,
+Given 1->2->3->4, you should return the list as 2->1->4->3.
+
+
+
+Your algorithm should use only constant space. You may not modify the values in the list, only nodes itself can be changed.
+
+Given a linked list, reverse the nodes of a linked list k at a time and return its modified list.
+
+
+
+k is a positive integer and is less than or equal to the length of the linked list. If the number of nodes is not a multiple of k then left-out nodes in the end should remain as it is.
+
+You may not alter the values in the nodes, only nodes itself may be changed.
+
+Only constant memory is allowed.
+
+
+For example,
+Given this linked list: 1->2->3->4->5
+
+
+
+For k = 2, you should return: 2->1->4->3->5
+
+
+
+For k = 3, you should return: 3->2->1->4->5
+
+Given a sorted array, remove the duplicates in place such that each element appear only once and return the new length.
+
+
+Do not allocate extra space for another array, you must do this in place with constant memory.
+
+
+
+For example,
+Given input array nums = [1,1,2],
+
+
+Your function should return length = 2, with the first two elements of nums being 1 and 2 respectively. It doesn't matter what you leave beyond the new length.
+Given an array and a value, remove all instances of that value in place and return the new length.
+
+
+Do not allocate extra space for another array, you must do this in place with constant memory.
+
+The order of elements can be changed. It doesn't matter what you leave beyond the new length.
+
+
+Example:
+Given input array nums = [3,2,2,3], val = 3
+
+
+Your function should return length = 2, with the first two elements of nums being 2.Level up your coding skills and quickly land a job. This is the best place to expand your knowledge and get prepared for your next interview.
+Divide two integers without using multiplication, division and mod operator.
+
+
+If it is overflow, return MAX_INT.
+
+You are given a string, s, and a list of words, words, that are all of the same length. Find all starting indices of substring(s) in s that is a concatenation of each word in words exactly once and without any intervening characters.
+
+
+
+For example, given:
+s: "barfoothefoobarman"
+words: ["foo", "bar"]
+
+
+
+You should return the indices: [0,9].
+(order does not matter).
+'
+Implement next permutation, which rearranges numbers into the lexicographically next greater permutation of numbers.
+
+
+If such arrangement is not possible, it must rearrange it as the lowest possible order (ie, sorted in ascending order).
+
+
+The replacement must be in-place, do not allocate extra memory.
+
+
+Here are some examples. Inputs are in the left-hand column and its corresponding outputs are in the right-hand column.
+1,2,3 &#8594; 1,3,2
+3,2,1 &#8594; 1,2,3
+1,1,5 &#8594; 1,5,1
+Given a string containing just the characters '(' and ')', find the length of the longest valid (well-formed) parentheses substring.
+
+
+For "(()", the longest valid parentheses substring is "()", which has length = 2.
+
+
+Another example is ")()())", where the longest valid parentheses substring is "()()", which has length = 4.
+Suppose an array sorted in ascending order is rotated at some pivot unknown to you beforehand.
+
+(i.e., 0 1 2 4 5 6 7 might become 4 5 6 7 0 1 2).
+
+You are given a target value to search. If found in the array return its index, otherwise return -1.
+
+You may assume no duplicate exists in the array.Given an array of integers sorted in ascending order, find the starting and ending position of a given target value.
+
+Your algorithm's runtime complexity must be in the order of O(log n).
+
+If the target is not found in the array, return [-1, -1].
+
+
+For example,
+Given [5, 7, 7, 8, 8, 10] and target value 8,
+return [3, 4].
+Given a sorted array and a target value, return the index if the target is found. If not, return the index where it would be if it were inserted in order.
+
+You may assume no duplicates in the array.
+
+
+Here are few examples.
+[1,3,5,6], 5 &#8594; 2
+[1,3,5,6], 2 &#8594; 1
+[1,3,5,6], 7 &#8594; 4
+[1,3,5,6], 0 &#8594; 0
+Determine if a Sudoku is valid, according to: Sudoku Puzzles - The Rules.
+
+The Sudoku board could be partially filled, where empty cells are filled with the character '.'.
+
+
+
+A partially filled sudoku which is valid.
+
+
+Note:
+A valid Sudoku board (partially filled) is not necessarily solvable. Only the filled cells need to be validated.
+Write a program to solve a Sudoku puzzle by filling the empty cells.
+
+Empty cells are indicated by the character '.'.
+
+You may assume that there will be only one unique solution.
+
+
+
+A sudoku puzzle...
+
+
+
+
+...and its solution numbers marked in red.
+The count-and-say sequence is the sequence of integers with the first five terms as following:
+
+1.     1
+2.     11
+3.     21
+4.     1211
+5.     111221
+
+
+
+1 is read off as "one 1" or 11.
+11 is read off as "two 1s" or 21.
+21 is read off as "one 2, then one 1" or 1211.
+
+
+
+Given an integer n, generate the nth term of the count-and-say sequence.
+
+
+
+Note: Each term of the sequence of integers will be represented as a string.
+
+
+Example 1:
+
+Input: 1
+Output: "1"
+
+
+
+Example 2:
+
+Input: 4
+Output: "1211"
+
+'
+Given a set of candidate numbers (C) (without duplicates) and a target number (T), find all unique combinations in C where the candidate numbers sums to T. 
+
+
+The same repeated number may be chosen from C unlimited number of times.
+
+
+Note:
+
+All numbers (including target) will be positive integers.
+The solution set must not contain duplicate combinations.
+
+
+
+
+For example, given candidate set [2, 3, 6, 7] and target 7, 
+A solution set is: 
+
+[
+  [7],
+  [2, 2, 3]
+]
+
+
+Given a collection of candidate numbers (C) and a target number (T), find all unique combinations in C where the candidate numbers sums to T.
+
+
+Each number in C may only be used once in the combination.
+
+Note:
+
+All numbers (including target) will be positive integers.
+The solution set must not contain duplicate combinations.
+
+
+
+
+For example, given candidate set [10, 1, 2, 7, 6, 1, 5] and target 8, 
+A solution set is: 
+
+[
+  [1, 7],
+  [1, 2, 5],
+  [2, 6],
+  [1, 1, 6]
+]
+
+
+Given an unsorted integer array, find the first missing positive integer.
+
+
+
+For example,
+Given [1,2,0] return 3,
+and [3,4,-1,1] return 2.
+
+
+
+Your algorithm should run in O(n) time and uses constant space.
+
+Given n non-negative integers representing an elevation map where the width of each bar is 1, compute how much water it is able to trap after raining. 
+
+
+
+For example, 
+Given [0,1,0,2,1,0,1,3,2,1,2,1], return 6.
+
+
+
+
+The above elevation map is represented by array [0,1,0,2,1,0,1,3,2,1,2,1]. In this case, 6 units of rain water (blue section) are being trapped. Thanks Marcos for contributing this image!Given two non-negative integers num1 and num2 represented as strings, return the product of num1 and num2.
+
+Note:
+
+The length of both num1 and num2 is < 110.
+Both num1 and num2 contains only digits 0-9.
+Both num1 and num2 does not contain any leading zero.
+You must not use any built-in BigInteger library or convert the inputs to integer directly.
+
+Implement wildcard pattern matching with support for '?' and '*'.
+
+
+'?' Matches any single character.
+'*' Matches any sequence of characters (including the empty sequence).
+
+The matching should cover the entire input string (not partial).
+
+The function prototype should be:
+bool isMatch(const char *s, const char *p)
+
+Some examples:
+isMatch("aa","a") → false
+isMatch("aa","aa") → true
+isMatch("aaa","aa") → false
+isMatch("aa", "*") → true
+isMatch("aa", "a*") → true
+isMatch("ab", "?*") → true
+isMatch("aab", "c*a*b") → false
+
+Given an array of non-negative integers, you are initially positioned at the first index of the array.
+
+
+Each element in the array represents your maximum jump length at that position. 
+
+
+Your goal is to reach the last index in the minimum number of jumps.
+
+
+
+For example:
+Given array A = [2,3,1,1,4]
+
+
+The minimum number of jumps to reach the last index is 2. (Jump 1 step from index 0 to 1, then 3 steps to the last index.)
+
+
+
+Note:
+You can assume that you can always reach the last index.
+Given a collection of distinct numbers, return all possible permutations.
+
+
+
+For example,
+[1,2,3] have the following permutations:
+
+[
+  [1,2,3],
+  [1,3,2],
+  [2,1,3],
+  [2,3,1],
+  [3,1,2],
+  [3,2,1]
+]
+
+
+Given a collection of numbers that might contain duplicates, return all possible unique permutations.
+
+
+
+For example,
+[1,1,2] have the following unique permutations:
+
+[
+  [1,1,2],
+  [1,2,1],
+  [2,1,1]
+]
+
+You are given an n x n 2D matrix representing an image.
+Rotate the image by 90 degrees (clockwise).
+Follow up:
+Could you do this in-place?Given an array of strings, group anagrams together.
+
+
+For example, given: ["eat", "tea", "tan", "ate", "nat", "bat"], 
+Return:
+
+[
+  ["ate", "eat","tea"],
+  ["nat","tan"],
+  ["bat"]
+]
+
+Note: All inputs will be in lower-case.'Level up your coding skills and quickly land a job. This is the best place to expand your knowledge and get prepared for your next interview.The n-queens puzzle is the problem of placing n queens on an n×n chessboard such that no two queens attack each other.
+
+
+
+Given an integer n, return all distinct solutions to the n-queens puzzle.
+
+Each solution contains a distinct board configuration of the n-queens' placement, where 'Q' and '.' both indicate a queen and an empty space respectively.
+
+For example,
+There exist two distinct solutions to the 4-queens puzzle:
+
+[
+ [".Q..",  // Solution 1
+  "...Q",
+  "Q...",
+  "..Q."],
+
+ ["..Q.",  // Solution 2
+  "Q...",
+  "...Q",
+  ".Q.."]
+]
+Follow up for N-Queens problem.
+
+Now, instead outputting board configurations, return the total number of distinct solutions.
+
+
+Find the contiguous subarray within an array (containing at least one number) which has the largest sum.
+
+
+For example, given the array [-2,1,-3,4,-1,2,1,-5,4],
+the contiguous subarray [4,-1,2,1] has the largest sum = 6.
+
+
+click to show more practice.
+
+More practice:
+
+If you have figured out the O(n) solution, try coding another solution using the divide and conquer approach, which is more subtle.
+Given a matrix of m x n elements (m rows, n columns), return all elements of the matrix in spiral order.
+
+
+
+For example,
+Given the following matrix:
+
+
+[
+ [ 1, 2, 3 ],
+ [ 4, 5, 6 ],
+ [ 7, 8, 9 ]
+]
+
+
+You should return [1,2,3,6,9,8,7,4,5].
+
+Given an array of non-negative integers, you are initially positioned at the first index of the array.
+
+
+Each element in the array represents your maximum jump length at that position. 
+
+
+Determine if you are able to reach the last index.
+
+
+
+For example:
+A = [2,3,1,1,4], return true.
+
+
+A = [3,2,1,0,4], return false.
+Given a collection of intervals, merge all overlapping intervals.
+
+
+For example,
+Given [1,3],[2,6],[8,10],[15,18],
+return [1,6],[8,10],[15,18].
+Given a set of non-overlapping intervals, insert a new interval into the intervals (merge if necessary).
+
+You may assume that the intervals were initially sorted according to their start times.
+
+
+Example 1:
+Given intervals [1,3],[6,9], insert and merge [2,5] in as [1,5],[6,9].
+
+
+
+Example 2:
+Given [1,2],[3,5],[6,7],[8,10],[12,16], insert and merge [4,9] in as [1,2],[3,10],[12,16].
+
+
+
+This is because the new interval [4,9] overlaps with [3,5],[6,7],[8,10].
+Given a string s consists of upper/lower-case alphabets and empty space characters ' ', return the length of last word in the string.
+
+If the last word does not exist, return 0.
+
+Note: A word is defined as a character sequence consists of non-space characters only.
+
+
+For example, 
+Given s = "Hello World",
+return 5.
+Given an integer n, generate a square matrix filled with elements from 1 to n2 in spiral order.
+
+
+For example,
+Given n = 3,
+
+You should return the following matrix:
+
+[
+ [ 1, 2, 3 ],
+ [ 8, 9, 4 ],
+ [ 7, 6, 5 ]
+]
+The set [1,2,3,&#8230;,n] contains a total of n! unique permutations.
+
+By listing and labeling all of the permutations in order,
+We get the following sequence (ie, for n = 3):
+
+"123"
+"132"
+"213"
+"231"
+"312"
+"321"
+
+
+
+Given n and k, return the kth permutation sequence.
+
+Note: Given n will be between 1 and 9 inclusive.'Given a list, rotate the list to the right by k places, where k is non-negative.
+
+For example:
+Given 1->2->3->4->5->NULL and k = 2,
+return 4->5->1->2->3->NULL.A robot is located at the top-left corner of a m x n grid (marked 'Start' in the diagram below).
+
+The robot can only move either down or right at any point in time. The robot is trying to reach the bottom-right corner of the grid (marked 'Finish' in the diagram below).
+
+How many possible unique paths are there?
+
+
+
+Above is a 3 x 7 grid. How many possible unique paths are there?
+
+
+Note: m and n will be at most 100.Follow up for "Unique Paths":
+
+Now consider if some obstacles are added to the grids. How many unique paths would there be?
+
+An obstacle and empty space is marked as 1 and 0 respectively in the grid.
+
+For example,
+There is one obstacle in the middle of a 3x3 grid as illustrated below.
+
+[
+  [0,0,0],
+  [0,1,0],
+  [0,0,0]
+]
+
+The total number of unique paths is 2.
+
+Note: m and n will be at most 100.'Given a m x n grid filled with non-negative numbers, find a path from top left to bottom right which minimizes the sum of all numbers along its path.
+
+Note: You can only move either down or right at any point in time.Validate if a given string is numeric.
+
+
+Some examples:
+"0" => true
+"   0.1  " => true
+"abc" => false
+"1 a" => false
+"2e10" => true
+
+
+Note: It is intended for the problem statement to be ambiguous. You should gather all requirements up front before implementing one.
+
+
+
+Update (2015-02-10):
+The signature of the C++ function had been updated. If you still see your function signature accepts a const char * argument, please click the reload button  to reset your code definition.
+'Given a non-negative integer represented as a non-empty array of digits, plus one to the integer.
+
+You may assume the integer do not contain any leading zero, except the number 0 itself.
+
+The digits are stored such that the most significant digit is at the head of the list.
+Given two binary strings, return their sum (also a binary string).
+
+
+
+For example,
+a = "11"
+b = "1"
+Return "100".
+'
+Given an array of words and a length L, format the text such that each line has exactly L characters and is fully (left and right) justified.
+ 
+
+
+You should pack your words in a greedy approach; that is, pack as many words as you can in each line. Pad extra spaces ' ' when necessary so that each line has exactly L characters.
+
+
+
+Extra spaces between words should be distributed as evenly as possible. If the number of spaces on a line do not divide evenly between words, the empty slots on the left will be assigned more spaces than the slots on the right.
+
+
+
+For the last line of text, it should be left justified and no extra space is inserted between words.
+
+
+
+For example,
+words: ["This", "is", "an", "example", "of", "text", "justification."]
+L: 16.
+
+
+
+Return the formatted lines as:
+
+[
+   "This    is    an",
+   "example  of text",
+   "justification.  "
+]
+
+
+
+
+Note: Each word is guaranteed not to exceed L in length.
+
+
+
+click to show corner cases.
+
+Corner Cases:
+
+
+A line other than the last line might contain only one word. What should you do in this case?
+In this case, that line should be left-justified.
+
+Level up your coding skills and quickly land a job. This is the best place to expand your knowledge and get prepared for your next interview.You are climbing a stair case. It takes n steps to reach to the top.
+
+Each time you can either climb 1 or 2 steps. In how many distinct ways can you climb to the top?
+
+
+Note: Given n will be a positive integer.
+Given an absolute path for a file (Unix-style), simplify it.
+
+For example,
+path = "/home/", => "/home"
+path = "/a/./b/../../c/", => "/c"
+
+
+click to show corner cases.
+
+Corner Cases:
+
+
+
+Did you consider the case where path = "/../"?
+In this case, you should return "/".
+Another corner case is the path might contain multiple slashes '/' together, such as "/home//foo/".
+In this case, you should ignore redundant slashes and return "/home/foo".
+
+
+Given two words word1 and word2, find the minimum number of steps required to convert word1 to word2. (each operation is counted as 1 step.)
+
+
+
+You have the following 3 operations permitted on a word:
+
+
+
+a) Insert a character
+b) Delete a character
+c) Replace a character
+
+Given a m x n matrix, if an element is 0, set its entire row and column to 0. Do it in place.
+
+
+click to show follow up.
+
+Follow up:
+
+
+Did you use extra space?
+A straight forward solution using O(mn) space is probably a bad idea.
+A simple improvement uses O(m + n) space, but still not the best solution.
+Coul

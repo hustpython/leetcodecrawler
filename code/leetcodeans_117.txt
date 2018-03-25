@@ -1,0 +1,1852 @@
+50,Pow(x, n):
+
+Shortest Python - Guaranteed
+[Surprisingly](http://stackoverflow.com/questions/30693639/why-does-class-x-mypow-pow-work-what-about-self), I can just use Python's existing `pow` like this:
+
+    class Solution:
+        myPow = pow
+
+That's even shorter than the other more obvious "cheat":
+
+    class Solution:
+        def myPow(self, x, n):
+            return x ** n
+
+And to calm down the haters, here's me *"doing it myself"*:
+
+Recursive:
+
+    class Solution:
+        def myPow(self, x, n):
+            if not n:
+                return 1
+            if n < 0:
+                return 1 / self.myPow(x, -n)
+            if n % 2:
+                return x * self.myPow(x, n-1)
+            return self.myPow(x*x, n/2)
+
+Iterative:
+
+    class Solution:
+        def myPow(self, x, n):
+            if n < 0:
+                x = 1 / x
+                n = -n
+            pow = 1
+            while n:
+                if n & 1:
+                    pow *= x
+                x *= x
+                n >>= 1
+            return pow
+51,N-Queens:
+
+Python recursive dfs solution with comments.
+   
+   
+    def solveNQueens(self, n):
+        res = []
+        self.dfs([-1]*n, 0, [], res)
+        return res
+     
+    # nums is a one-dimension array, like [1, 3, 0, 2] means
+    # first queen is placed in column 1, second queen is placed
+    # in column 3, etc.
+    def dfs(self, nums, index, path, res):
+        if index == len(nums):
+            res.append(path)
+            return  # backtracking
+        for i in xrange(len(nums)):
+            nums[index] = i
+            if self.valid(nums, index):  # pruning
+                tmp = "."*len(nums)
+                self.dfs(nums, index+1, path+[tmp[:i]+"Q"+tmp[i+1:]], res)
+    
+    # check whether nth queen can be placed in that column
+    def valid(self, nums, n):
+        for i in xrange(n):
+            if abs(nums[i]-nums[n]) == n -i or nums[i] == nums[n]:
+                return False
+        return True
+52,N-Queens II:
+
+Python recursive dfs solution.
+The idea here is quite similar to [N-Queens ][1] while we don't need to record the path, and as the return value is a number not a list, it's better to use a global variable to record the result.
+       
+    def totalNQueens(self, n):
+        self.res = 0
+        self.dfs([-1]*n, 0)
+        return self.res
+        
+    def dfs(self, nums, index):
+        if index == len(nums):
+            self.res += 1
+            return 
+        for i in xrange(len(nums)):
+            nums[index] = i
+            if self.valid(nums, index):
+                self.dfs(nums, index+1)
+        
+    def valid(self, nums, n):
+        for i in xrange(n):
+            if nums[i] == nums[n] or abs(nums[n]-nums[i]) == n-i:
+                return False
+        return True
+
+
+  [1]: https://leetcode.com/discuss/53764/python-recursive-dfs-solution-with-comments
+53,Maximum Subarray:
+
+A Python solution
+    class Solution:
+        # @param A, a list of integers
+        # @return an integer
+        # 6:57
+        def maxSubArray(self, A):
+            if not A:
+                return 0
+    
+            curSum = maxSum = A[0]
+            for num in A[1:]:
+                curSum = max(num, curSum + num)
+                maxSum = max(maxSum, curSum)
+    
+            return maxSum
+            
+54,Spiral Matrix:
+
+1-liner in Python
+Inefficient for large matrices, but here I got it accepted in 40 ms, one of the fastest Python submissions.
+
+    def spiralOrder(self, matrix):
+        return matrix and list(matrix.pop(0)) + self.spiralOrder(zip(*matrix)[::-1])
+56,Merge Intervals:
+
+7 lines, easy, Python
+Just go through the intervals sorted by start coordinate and either combine the current interval with the previous one if they overlap, or add it to the output by itself if they don't.
+
+    def merge(self, intervals):
+        out = []
+        for i in sorted(intervals, key=lambda i: i.start):
+            if out and i.start <= out[-1].end:
+                out[-1].end = max(out[-1].end, i.end)
+            else:
+                out += i,
+        return out
+
+57,Insert Interval:
+
+O(n) Python solution
+    class Solution:
+        # @param intervals, a list of Intervals
+        # @param newInterval, a Interval
+        # @return a list of Interval
+        def insert(self, intervals, newInterval):
+            start = newInterval.start
+            end = newInterval.end
+            result = []
+            i = 0
+            while i < len(intervals):
+                if start <= intervals[i].end:
+                    if end < intervals[i].start:
+                        break
+                    start = min(start, intervals[i].start)
+                    end = max(end, intervals[i].end)
+                else:
+                    result.append(intervals[i])
+                i += 1
+            result.append(Interval(start, end))
+            result += intervals[i:]
+            return result
+
+
+
+58,Length of Last Word:
+
+One line Python solution
+    def lengthOfLastWord(self, s):
+        return len(s.rstrip(' ').split(' ')[-1])
+
+I know this is not the solution that the question wants. Just for fun.
+
+59,Spiral Matrix II:
+
+4-9 lines Python solutions
+**Solution 1: *Build it inside-out*** - 44 ms, 5 lines
+
+Start with the empty matrix, add the numbers in reverse order until we added the number 1. Always rotate the matrix clockwise and add a top row:
+
+        ||  =>  |9|  =>  |8|      |6 7|      |4 5|      |1 2 3|
+                         |9|  =>  |9 8|  =>  |9 6|  =>  |8 9 4|
+                                             |8 7|      |7 6 5|
+
+The code:
+
+    def generateMatrix(self, n):
+        A, lo = [], n*n+1
+        while lo > 1:
+            lo, hi = lo - len(A), lo
+            A = [range(lo, hi)] + zip(*A[::-1])
+        return A
+
+While this isn't O(n^2), it's actually quite fast, presumably due to me not doing much in Python but relying on `zip` and `range` and `+` being fast. I got it accepted in 44 ms, matching the fastest time for recent Python submissions (according to the submission detail page).
+
+---
+
+**Solution 2: *Ugly inside-out*** - 48 ms, 4 lines
+
+Same as solution 1, but without helper variables. Saves a line, but makes it ugly. Also, because I access A[0][0], I had to handle the n=0 case differently.
+
+    def generateMatrix(self, n):
+        A = [[n*n]]
+        while A[0][0] > 1:
+            A = [range(A[0][0] - len(A), A[0][0])] + zip(*A[::-1])
+        return A * (n>0)
+
+---
+
+**Solution 3: *Walk the spiral*** - 52 ms, 9 lines
+
+Initialize the matrix with zeros, then walk the spiral path and write the numbers 1 to n*n. Make a right turn when the cell ahead is already non-zero.
+
+    def generateMatrix(self, n):
+        A = [[0] * n for _ in range(n)]
+        i, j, di, dj = 0, 0, 0, 1
+        for k in xrange(n*n):
+            A[i][j] = k + 1
+            if A[(i+di)%n][(j+dj)%n]:
+                di, dj = dj, -di
+            i += di
+            j += dj
+        return A
+
+60,Permutation Sequence:
+
+Share my Python solution with detailed explanation
+The idea is as follow:
+
+For permutations of n, the first (n-1)! permutations start with 1, next (n-1)! ones start with 2, ... and so on. And in each group of (n-1)! permutations, the first (n-2)! permutations start with the smallest remaining number, ...
+
+take n = 3 as an example, the first 2 (that is, (3-1)! ) permutations start with 1, next 2 start with 2 and last 2 start with 3. For the first 2 permutations (123 and 132), the 1st one (1!) starts with 2, which is the smallest remaining number (2 and 3). So we can use a loop to check the region that the sequence number falls in and get the starting digit. Then we adjust the sequence number and continue.
+
+    import math
+    class Solution:
+        # @param {integer} n
+        # @param {integer} k
+        # @return {string}
+        def getPermutation(self, n, k):
+            numbers = range(1, n+1)
+            permutation = ''
+            k -= 1
+            while n > 0:
+                n -= 1
+                # get the index of current digit
+                index, k = divmod(k, math.factorial(n))
+                permutation += str(numbers[index])
+                # remove handled number
+                numbers.remove(numbers[index])
+    
+            return permutation
+
+61,Rotate List:
+
+97.63% Python Solution
+    class Solution(object):
+    def rotateRight(self, head, k):
+        """
+        :type head: ListNode
+        :type k: int
+        :rtype: ListNode
+        """
+        if not head:
+            return None
+        
+        if head.next == None:
+            return head
+            
+        pointer = head
+        length = 1
+        
+        while pointer.next:
+            pointer = pointer.next
+            length += 1
+        
+        rotateTimes = k%length
+        
+        if k == 0 or rotateTimes == 0:
+            return head
+        
+        fastPointer = head
+        slowPointer = head
+        
+        for a in range (rotateTimes):
+            fastPointer = fastPointer.next
+        
+        
+        while fastPointer.next:
+            slowPointer = slowPointer.next
+            fastPointer = fastPointer.next
+        
+        temp = slowPointer.next
+        
+        slowPointer.next = None
+        fastPointer.next = head
+        head = temp
+        
+        return head
+62,Unique Paths:
+
+1 Line Math Solution (Python)
+    class Solution(object):
+        def uniquePaths(self, m, n):
+            """
+            :type m: int
+            :type n: int
+            :rtype: int
+            """
+            return math.factorial(m+n-2)/math.factorial(m-1)/math.factorial(n-1)
+63,Unique Paths II:
+
+Accepted simple Python in-place solution
+As below. Any comments on how to make it shorter? Thx!
+
+    class Solution:
+        # @param obstacleGrid, a list of lists of integers
+        # @return an integer
+        def uniquePathsWithObstacles(self, obstacleGrid):
+            m = len(obstacleGrid)
+            n = len(obstacleGrid[0])
+            obstacleGrid[0][0] = 1 - obstacleGrid[0][0]
+            
+            for i in range(1, n):
+                if not obstacleGrid[0][i]:
+                    obstacleGrid[0][i] = obstacleGrid[0][i-1]
+                else:
+                    obstacleGrid[0][i] = 0
+                    
+            for i in range(1, m):
+                if not obstacleGrid[i][0]:
+                    obstacleGrid[i][0] = obstacleGrid[i-1][0]
+                else:
+                    obstacleGrid[i][0] = 0
+                    
+            for i in range(1, m):
+                for j in range(1, n):
+                    if not obstacleGrid[i][j]:
+                        obstacleGrid[i][j] = obstacleGrid[i][j-1]+obstacleGrid[i-1][j]
+                    else:
+                        obstacleGrid[i][j] = 0
+                        
+            return obstacleGrid[-1][-1]
+64,Minimum Path Sum:
+
+Python solutions (O(m*n), O(n) space).
+        
+    # O(m*n) space
+    def minPathSum(self, grid):
+        if not grid:
+            return 
+        r, c = len(grid), len(grid[0])
+        dp = [[0 for _ in xrange(c)] for _ in xrange(r)]
+        dp[0][0] = grid[0][0]
+        for i in xrange(1, r):
+            dp[i][0] = dp[i-1][0] + grid[i][0]
+        for i in xrange(1, c):
+            dp[0][i] = dp[0][i-1] + grid[0][i]
+        for i in xrange(1, len(grid)):
+            for j in xrange(1, len(grid[0])):
+                dp[i][j] = min(dp[i-1][j], dp[i][j-1]) + grid[i][j]
+        return dp[-1][-1]
+                
+    # O(2*n) space
+    def minPathSum2(self, grid):
+        if not grid:
+            return 
+        r, c = len(grid), len(grid[0])
+        pre = cur = [0] * c
+        pre[0] = grid[0][0] 
+        for i in xrange(1, c):
+            pre[i] = pre[i-1] + grid[0][i]
+        for i in xrange(1, r):
+            cur[0] = pre[0] + grid[i][0]
+            for j in xrange(1, c):
+                cur[j] = min(cur[j-1], pre[j]) + grid[i][j]
+            pre = cur
+        return cur[-1]
+        
+    # O(n) space
+    def minPathSum(self, grid):
+        if not grid:
+            return 
+        r, c = len(grid), len(grid[0])
+        cur = [0] * c
+        cur[0] = grid[0][0] 
+        for i in xrange(1, c):
+            cur[i] = cur[i-1] + grid[0][i]
+        for i in xrange(1, r):
+            cur[0] += grid[i][0]
+            for j in xrange(1, c):
+                cur[j] = min(cur[j-1], cur[j]) + grid[i][j]
+        return cur[-1]
+    
+    # change the grid itself  
+    def minPathSum4(self, grid):
+        if not grid:
+            return 
+        r, c = len(grid), len(grid[0])
+        for i in xrange(1, c):
+            grid[0][i] += grid[0][i-1]
+        for i in xrange(1, r):
+            grid[i][0] += grid[i-1][0]
+        for i in xrange(1, r):
+            for j in xrange(1, c):
+                grid[i][j] += min(grid[i-1][j], grid[i][j-1])
+        return grid[-1][-1]
+65,Valid Number:
+
+A simple solution in Python based on DFA
+I was asked in the interview of linkedIn, writing it directly can be extremely complicated, for there are many special cases we have to deal with, and the code I wrote was messy. Then I failed to pass the interview. 
+
+Here's a clear solution. With DFA we can easily get our idea into shape and then debug, and the source code is clear and simple.
+
+
+
+    class Solution(object):
+    def isNumber(self, s):
+        """
+        :type s: str
+        :rtype: bool
+        """
+        #define a DFA
+        state = [{}, 
+                {'b': 1, 's': 2, 'd':3, '.':4}, 
+                {'d':3, '.':4},
+                {'d':3, '.':5, 'e':6, 'b':9},
+                {'d':5},
+                {'d':5, 'e':6, 'b':9},
+                {'s':7, 'd':8},
+                {'d':8},
+                {'d':8, 'b':9},
+                {'b':9}]
+        currentState = 1
+        for c in s:
+            if c >= '0' and c <= '9':
+                c = 'd'
+            if c == ' ':
+                c = 'b'
+            if c in ['+', '-']:
+                c = 's'
+            if c not in state[currentState].keys():
+                return False
+            currentState = state[currentState][c]
+        if currentState not in [3,5,8,9]:
+            return False
+        return True
+
+![enter image description here][1]
+
+
+  [1]: http://normanyahq.github.io/static/files/valid_number_dfa.svg
+66,Plus One:
+
+Simple Python solution with explanation (Plus One)
+    def plusOne(digits):
+        num = 0
+        for i in range(len(digits)):
+        	num += digits[i] * pow(10, (len(digits)-1-i))
+        return [int(i) for i in str(num+1)]
+
+We're given a list of digits, and the idea here is to convert that list to an integer, *num*. So each digit is multiplied by the proper place value and added to *num*. For example, if *digits* = [3, 8, 2, 5] then on the first iteration 3 is multiplied by 10 to the power of 4-1-0 = 3, so this results in 3000, which is added to *num*. Then 8 is multiplied by 10^2 and added to *num*, and so on.
+
+The last step is to add 1 to *num*, convert it to a list and return that list.
+67,Add Binary:
+
+An accepted concise Python recursive solution 10 lines
+    #add two binary from back to front, I think it is very self explained, when 1+1 we need a carry.
+       class Solution:
+            def addBinary(self, a, b):
+                if len(a)==0: return b
+                if len(b)==0: return a
+                if a[-1] == '1' and b[-1] == '1':
+                    return self.addBinary(self.addBinary(a[0:-1],b[0:-1]),'1')+'0'
+                if a[-1] == '0' and b[-1] == '0':
+                    return self.addBinary(a[0:-1],b[0:-1])+'0'
+                else:
+                    return self.addBinary(a[0:-1],b[0:-1])+'1'
+
+
+68,Text Justification:
+
+15-line Python solution, 40ms
+    def fullJustify(self, words, maxWidth):
+        i, N, result = 0, len(words), []
+        while i < N:
+            # decide how many words to be put in one line
+            oneLine, j, currWidth, positionNum, spaceNum = [words[i]], i + 1, len(words[i]), 0, maxWidth - len(words[i])
+            while j < N and currWidth + 1 + len(words[j]) <= maxWidth:
+                oneLine.append(words[j])
+                currWidth += 1 + len(words[j])
+                spaceNum -= len(words[j])
+                positionNum, j = positionNum + 1, j + 1
+            i = j
+            # decide the layout of one line
+            if i < N and positionNum:
+                spaces = [' ' * (spaceNum / positionNum + (k < spaceNum % positionNum)) for k in range(positionNum)] + ['']
+            else: # last line or the line only has one word
+                spaces = [' '] * positionNum + [' ' * (maxWidth - currWidth)]
+            result.append(''.join([s for pair in zip(oneLine, spaces) for s in pair]))
+        return result
+69,Sqrt(x):
+
+Python binary search solution (O(lgn)).
+        
+    # Binary search  
+    def mySqrt(self, x):
+        l, r = 0, x
+        while l <= r:
+            mid = l + (r-l)//2
+            if mid * mid <= x < (mid+1)*(mid+1):
+                return mid
+            elif x < mid * mid:
+                r = mid
+            else:
+                l = mid + 1
+70,Climbing Stairs:
+
+Python different solutions (bottom up, top down).
+    
+    # Top down - TLE
+    def climbStairs1(self, n):
+        if n == 1:
+            return 1
+        if n == 2:
+            return 2
+        return self.climbStairs(n-1)+self.climbStairs(n-2)
+     
+    # Bottom up, O(n) space
+    def climbStairs2(self, n):
+        if n == 1:
+            return 1
+        res = [0 for i in xrange(n)]
+        res[0], res[1] = 1, 2
+        for i in xrange(2, n):
+            res[i] = res[i-1] + res[i-2]
+        return res[-1]
+    
+    # Bottom up, constant space
+    def climbStairs3(self, n):
+        if n == 1:
+            return 1
+        a, b = 1, 2
+        for i in xrange(2, n):
+            tmp = b
+            b = a+b
+            a = tmp
+        return b
+        
+    # Top down + memorization (list)
+    def climbStairs4(self, n):
+        if n == 1:
+            return 1
+        dic = [-1 for i in xrange(n)]
+        dic[0], dic[1] = 1, 2
+        return self.helper(n-1, dic)
+        
+    def helper(self, n, dic):
+        if dic[n] < 0:
+            dic[n] = self.helper(n-1, dic)+self.helper(n-2, dic)
+        return dic[n]
+        
+    # Top down + memorization (dictionary)  
+    def __init__(self):
+        self.dic = {1:1, 2:2}
+        
+    def climbStairs(self, n):
+        if n not in self.dic:
+            self.dic[n] = self.climbStairs(n-1) + self.climbStairs(n-2)
+        return self.dic[n]
+71,Simplify Path:
+
+9 lines of Python code
+    class Solution(object):
+        def simplifyPath(self, path):
+            places = [p for p in path.split("/") if p!="." and p!=""]
+            stack = []
+            for p in places:
+                if p == "..":
+                    if len(stack) > 0:
+                        stack.pop()
+                else:
+                    stack.append(p)
+            return "/" + "/".join(stack)
+72,Edit Distance:
+
+Python solutions (O(m*n), O(n) space).
+        
+   
+
+    
+    # O(m*n) space
+    def minDistance1(self, word1, word2):
+        l1, l2 = len(word1)+1, len(word2)+1
+        dp = [[0 for _ in xrange(l2)] for _ in xrange(l1)]
+        for i in xrange(l1):
+            dp[i][0] = i
+        for j in xrange(l2):
+            dp[0][j] = j
+        for i in xrange(1, l1):
+            for j in xrange(1, l2):
+                dp[i][j] = min(dp[i-1][j]+1, dp[i][j-1]+1, dp[i-1][j-1]+(word1[i-1]!=word2[j-1]))
+        return dp[-1][-1]
+                    
+    
+    # O(n) space with rolling array            
+    def minDistance(self, word1, word2):
+        l1, l2 = len(word1)+1, len(word2)+1
+        pre = [0 for _ in xrange(l2)]
+        for j in xrange(l2):
+            pre[j] = j
+        for i in xrange(1, l1):
+            cur = [i]*l2
+            for j in xrange(1, l2):
+                cur[j] = min(cur[j-1]+1, pre[j]+1, pre[j-1]+(word1[i-1]!=word2[j-1]))
+            pre = cur[:]
+        return pre[-1]
+73,Set Matrix Zeroes:
+
+O(1) space solution in Python
+    class Solution:
+    # @param {integer[][]} matrix
+    # @return {void} Do not return anything, modify matrix in-place instead.
+    def setZeroes(self, matrix):
+        m = len(matrix)
+        if m == 0:
+            return
+        n = len(matrix[0])
+        
+        row_zero = False
+        for i in range(m):
+            if matrix[i][0] == 0:
+                row_zero = True
+        col_zero = False
+        for j in range(n):
+            if matrix[0][j] == 0:
+                col_zero = True
+                
+        for i in range(1, m):
+            for j in range(1, n):
+                if matrix[i][j] == 0:
+                    matrix[i][0] = 0
+                    matrix[0][j] = 0
+        
+        for i in range(1, m):
+            if matrix[i][0] == 0:
+                for j in range(1, n):
+                    matrix[i][j] = 0
+                    
+        for j in range(1, n):
+            if matrix[0][j] == 0:
+                for i in range(1, m):
+                    matrix[i][j] = 0
+        
+        if col_zero:
+            for j in range(n):
+                matrix[0][j] = 0
+        if row_zero:
+            for i in range(m):
+                matrix[i][0] = 0
+                
+74,Search a 2D Matrix:
+
+A Python binary search solution - O(logn)
+It is basically an advanced version of the binary search
+
+    class Solution:
+        # @param matrix, a list of lists of integers
+        # @param target, an integer
+        # @return a boolean
+        # 8:21
+        def searchMatrix(self, matrix, target):
+            if not matrix or target is None:
+                return False
+    
+            rows, cols = len(matrix), len(matrix[0])
+            low, high = 0, rows * cols - 1
+            
+            while low <= high:
+                mid = (low + high) / 2
+                num = matrix[mid / cols][mid % cols]
+    
+                if num == target:
+                    return True
+                elif num < target:
+                    low = mid + 1
+                else:
+                    high = mid - 1
+            
+            return False
+75,Sort Colors:
+
+AC Python in place one pass solution O(n) time O(1) space, no swap no count
+    def sortColors(self, nums):
+        i = j = 0
+        for k in xrange(len(nums)):
+            v = nums[k]
+            nums[k] = 2
+            if v < 2:
+                nums[j] = 1
+                j += 1
+            if v == 0:
+                nums[i] = 0
+                i += 1
+
+    # 86 / 86 test cases passed.
+    # Status: Accepted
+    # Runtime: 44 ms
+    # 84.03%
+
+
+Just like the Lomuto partition algorithm usually used in quick sort. We keep a loop invariant that [0,i) [i, j) [j, k) are 0s, 1s and 2s sorted in place for [0,k). Here ")" means exclusive. We don't need to swap because we know the values we want.
+76,Minimum Window Substring:
+
+12 lines Python
+The current window is `s[i:j]` and the result window is `s[I:J]`. In `need[c]` I store how many times I need character `c` (can be negative) and `missing` tells how many characters are still missing. In the loop, first add the new character to the window. Then, if nothing is missing, remove as much as possible from the window start and then update the result.
+
+    def minWindow(self, s, t):
+        need, missing = collections.Counter(t), len(t)
+        i = I = J = 0
+        for j, c in enumerate(s, 1):
+            missing -= need[c] > 0
+            need[c] -= 1
+            if not missing:
+                while i < j and need[s[i]] < 0:
+                    need[s[i]] += 1
+                    i += 1
+                if not J or j - i <= J - I:
+                    I, J = i, j
+        return s[I:J]
+
+77,Combinations:
+
+AC Python backtracking iterative solution 60 ms
+    def combine(self, n, k):
+        ans = []
+        stack = []
+        x = 1
+        while True:
+            l = len(stack)
+            if l == k:
+                ans.append(stack[:])
+            if l == k or x > n - k + l + 1:
+                if not stack:
+                    return ans
+                x = stack.pop() + 1
+            else:
+                stack.append(x)
+                x += 1
+
+    # 26 / 26 test cases passed.
+    # Status: Accepted
+    # Runtime: 60 ms
+    # 98.51%
+
+
+Combinations is typical application for backtracking. Two conditions for back track: (1) the stack length is already k (2) the current value is too large for the rest slots to fit in since we are using ascending order to make sure the uniqueness of each combination.
+78,Subsets:
+
+Python easy to understand solutions (DFS recursively, Bit Manipulation, Iteratively).
+    # DFS recursively 
+    def subsets1(self, nums):
+        res = []
+        self.dfs(sorted(nums), 0, [], res)
+        return res
+        
+    def dfs(self, nums, index, path, res):
+        res.append(path)
+        for i in xrange(index, len(nums)):
+            self.dfs(nums, i+1, path+[nums[i]], res)
+            
+    # Bit Manipulation    
+    def subsets2(self, nums):
+        res = []
+        nums.sort()
+        for i in xrange(1<<len(nums)):
+            tmp = []
+            for j in xrange(len(nums)):
+                if i & 1 << j:  # if i >> j & 1:
+                    tmp.append(nums[j])
+            res.append(tmp)
+        return res
+        
+    # Iteratively
+    def subsets(self, nums):
+        res = [[]]
+        for num in sorted(nums):
+            res += [item+[num] for item in res]
+        return res
+79,Word Search:
+
+Python dfs solution with comments.
+        
+    def exist(self, board, word):
+        if not board:
+            return False
+        for i in xrange(len(board)):
+            for j in xrange(len(board[0])):
+                if self.dfs(board, i, j, word):
+                    return True
+        return False
+    
+    # check whether can find word, start at (i,j) position    
+    def dfs(self, board, i, j, word):
+        if len(word) == 0: # all the characters are checked
+            return True
+        if i<0 or i>=len(board) or j<0 or j>=len(board[0]) or word[0]!=board[i][j]:
+            return False
+        tmp = board[i][j]  # first character is found, check the remaining part
+        board[i][j] = "#"  # avoid visit agian 
+        # check whether can find "word" along one direction
+        res = self.dfs(board, i+1, j, word[1:]) or self.dfs(board, i-1, j, word[1:]) \
+        or self.dfs(board, i, j+1, word[1:]) or self.dfs(board, i, j-1, word[1:])
+        board[i][j] = tmp
+        return res
+80,Remove Duplicates from Sorted Array II:
+
+3-6 easy lines, C++, Java, Python, Ruby
+Same simple solution written in several languages. Just go through the numbers and include those in the result that haven't been included twice already.
+
+**C++**
+
+    int removeDuplicates(vector<int>& nums) {
+        int i = 0;
+        for (int n : nums)
+            if (i < 2 || n > nums[i-2])
+                nums[i++] = n;
+        return i;
+    }
+
+**Java**
+
+    public int removeDuplicates(int[] nums) {
+        int i = 0;
+        for (int n : nums)
+            if (i < 2 || n > nums[i-2])
+                nums[i++] = n;
+        return i;
+    }
+
+**Python**
+
+    def removeDuplicates(self, nums):
+        i = 0
+        for n in nums:
+            if i < 2 or n > nums[i-2]:
+                nums[i] = n
+                i += 1
+        return i
+
+**Ruby**
+
+    def remove_duplicates(nums)
+        i = 0
+        nums.each { |n| nums[(i+=1)-1] = n if i < 2 || n > nums[i-2] }
+        i
+    end
+
+81,Search in Rotated Sorted Array II:
+
+Python easy to understand solution (with comments).
+        
+    def search(self, nums, target):
+        l, r = 0, len(nums)-1
+        while l <= r:
+            mid = l + (r-l)//2
+            if nums[mid] == target:
+                return True
+            while l < mid and nums[l] == nums[mid]: # tricky part
+                l += 1
+            # the first half is ordered
+            if nums[l] <= nums[mid]:
+                # target is in the first half
+                if nums[l] <= target < nums[mid]:
+                    r = mid - 1
+                else:
+                    l = mid + 1
+            # the second half is ordered
+            else:
+                # target is in the second half
+                if nums[mid] < target <= nums[r]:
+                    l = mid + 1
+                else:
+                    r = mid - 1
+        return False
+82,Remove Duplicates from Sorted List II:
+
+Python in-place solution with dummy head node.
+        
+    def deleteDuplicates(self, head):
+        dummy = pre = ListNode(0)
+        dummy.next = head
+        while head and head.next:
+            if head.val == head.next.val:
+                while head and head.next and head.val == head.next.val:
+                    head = head.next
+                head = head.next
+                pre.next = head
+            else:
+                pre = pre.next
+                head = head.next
+        return dummy.next
+83,Remove Duplicates from Sorted List:
+
+Simple iterative Python 6 lines, 60 ms
+    def deleteDuplicates(self, head):
+        cur = head
+        while cur:
+            while cur.next and cur.next.val == cur.val:
+                cur.next = cur.next.next     # skip duplicated node
+            cur = cur.next     # not duplicate of current node, move to next node
+        return head
+84,Largest Rectangle in Histogram:
+
+AC Python clean solution using stack 76ms
+    def largestRectangleArea(self, height):
+        height.append(0)
+        stack = [-1]
+        ans = 0
+        for i in xrange(len(height)):
+            while height[i] < height[stack[-1]]:
+                h = height[stack.pop()]
+                w = i - stack[-1] - 1
+                ans = max(ans, h * w)
+            stack.append(i)
+        height.pop()
+        return ans
+
+
+
+    # 94 / 94 test cases passed.
+    # Status: Accepted
+    # Runtime: 76 ms
+    # 97.34%
+
+The stack maintain the indexes of buildings with ascending height. Before adding a new building pop the building who is taller than the new one. The building popped out represent the height of a rectangle with the new building as the right boundary and the current stack top as the left boundary. Calculate its area and update ans of maximum area. Boundary is handled using dummy buildings.
+85,Maximal Rectangle:
+
+AC Python DP solutioin 120ms based on largest rectangle in histogram
+    def maximalRectangle(self, matrix):
+        if not matrix or not matrix[0]:
+            return 0
+        n = len(matrix[0])
+        height = [0] * (n + 1)
+        ans = 0
+        for row in matrix:
+            for i in xrange(n):
+                height[i] = height[i] + 1 if row[i] == '1' else 0
+            stack = [-1]
+            for i in xrange(n + 1):
+                while height[i] < height[stack[-1]]:
+                    h = height[stack.pop()]
+                    w = i - 1 - stack[-1]
+                    ans = max(ans, h * w)
+                stack.append(i)
+        return ans
+
+    # 65 / 65 test cases passed.
+    # Status: Accepted
+    # Runtime: 120 ms
+    # 100%
+
+The solution is based on [largest rectangle in histogram][1] solution. Every row in the matrix is viewed as the ground with some buildings on it. The building height is the count of consecutive 1s from that row to above rows. The rest is then the same as [this solution for largest rectangle in histogram][2]
+
+
+  [1]: https://leetcode.com/problems/largest-rectangle-in-histogram/
+  [2]: https://leetcode.com/discuss/65647/ac-python-clean-solution-using-stack-76ms
+
+86,Partition List:
+
+Python concise solution with dummy nodes.
+        
+    def partition(self, head, x):
+        h1 = l1 = ListNode(0)
+        h2 = l2 = ListNode(0)
+        while head:
+            if head.val < x:
+                l1.next = head
+                l1 = l1.next
+            else:
+                l2.next = head
+                l2 = l2.next
+            head = head.next
+        l2.next = None
+        l1.next = h2.next
+        return h1.next
+87,Scramble String:
+
+Python recursive solution
+    class Solution:
+    # @return a boolean
+    def isScramble(self, s1, s2):
+        n, m = len(s1), len(s2)
+        if n != m or sorted(s1) != sorted(s2):
+            return False
+        if n < 4 or s1 == s2:
+            return True
+        f = self.isScramble
+        for i in range(1, n):
+            if f(s1[:i], s2[:i]) and f(s1[i:], s2[i:]) or \
+               f(s1[:i], s2[-i:]) and f(s1[i:], s2[:-i]):
+                return True
+        return False
+88,Merge Sorted Array:
+
+Beautiful Python Solution
+    def merge(self, nums1, m, nums2, n):
+            while m > 0 and n > 0:
+                if nums1[m-1] >= nums2[n-1]:
+                    nums1[m+n-1] = nums1[m-1]
+                    m -= 1
+                else:
+                    nums1[m+n-1] = nums2[n-1]
+                    n -= 1
+            if n > 0:
+                nums1[:n] = nums2[:n]
+89,Gray Code:
+
+One-liner Python solution (with demo in comments)
+All you need is a bit of careful thought.
+
+Btw, it's extremely useful to write down your thought/demo in comments before you actually start to write the code, especially during interview. 
+
+Even if you do not solve the problem finally, the interviewer at least get to know what you're thinking. 
+
+And if you don't get the problem right, he/she will have a chance to correct you.
+
+    class Solution:
+        # @return a list of integers
+        '''
+        from up to down, then left to right
+        
+        0   1   11  110
+                10  111
+                    101
+                    100
+                    
+        start:      [0]
+        i = 0:      [0, 1]
+        i = 1:      [0, 1, 3, 2]
+        i = 2:      [0, 1, 3, 2, 6, 7, 5, 4]
+        '''
+        def grayCode(self, n):
+            results = [0]
+            for i in range(n):
+                results += [x + pow(2, i) for x in reversed(results)]
+            return results
+90,Subsets II:
+
+Share my 5 lines of Python solution
+From the previous question Subsets I, the iterate solution is 
+
+    def subsets(self, nums):
+        res = [[]]
+        nums.sort()
+        for num in nums: 
+            res += [ i + [num] for i in res]
+        return res
+
+For every number in nums, we add it to every i in res. Ex. [[]], we add [] + [1] to res. The new res is [ [], [1] ]. Then add [] + [2] and [1] + [2], the new res is [[],[1],[2],[1,2]]. 
+
+To void the duplicate, we check if i + [num] is already in res. So the iterate solution for Subsets II is: 
+
+    def subsetsWithDup(self, nums):
+        res = [[]]
+        nums.sort()
+        for num in nums: 
+            res += [ i + [num] for i in res if i + [num] not in res]
+        return res
+91,Decode Ways:
+
+Accpeted Python DP solution
+    class Solution:
+        # @param s, a string
+        # @return an integer
+        def numDecodings(self, s):
+            #dp[i] = dp[i-1] if s[i] != "0"
+            #       +dp[i-2] if "09" < s[i-1:i+1] < "27"
+            if s == "": return 0
+            dp = [0 for x in range(len(s)+1)]
+            dp[0] = 1
+            for i in range(1, len(s)+1):
+                if s[i-1] != "0":
+                    dp[i] += dp[i-1]
+                if i != 1 and s[i-2:i] < "27" and s[i-2:i] > "09":  #"01"ways = 0
+                    dp[i] += dp[i-2]
+            return dp[len(s)]
+
+
+
+92,Reverse Linked List II:
+
+Python one pass iterative solution
+The idea is simple and intuitive: find linkedlist [m, n], reverse it, then connect m with n+1, connect n with m-1
+
+    
+    class Solution:
+        # @param head, a ListNode
+        # @param m, an integer
+        # @param n, an integer
+        # @return a ListNode
+        def reverseBetween(self, head, m, n):
+            if m == n:
+                return head
+    
+            dummyNode = ListNode(0)
+            dummyNode.next = head
+            pre = dummyNode
+    
+            for i in range(m - 1):
+                pre = pre.next
+            
+            # reverse the [m, n] nodes
+            reverse = None
+            cur = pre.next
+            for i in range(n - m + 1):
+                next = cur.next
+                cur.next = reverse
+                reverse = cur
+                cur = next
+    
+            pre.next.next = cur
+            pre.next = reverse
+    
+            return dummyNode.next
+93,Restore IP Addresses:
+
+Python easy to understand solution with comments (backtracking).
+    def restoreIpAddresses(self, s):
+        res = []
+        self.dfs(s, 0, "", res)
+        return res
+        
+    def dfs(self, s, index, path, res):
+        if index == 4:
+            if not s:
+                res.append(path[:-1])
+            return # backtracking
+        for i in xrange(1, 4):
+            # the digits we choose should no more than the length of s
+            if i <= len(s):
+                #choose one digit
+                if i == 1: 
+                    self.dfs(s[i:], index+1, path+s[:i]+".", res)
+                #choose two digits, the first one should not be "0"
+                elif i == 2 and s[0] != "0": 
+                    self.dfs(s[i:], index+1, path+s[:i]+".", res)
+                #choose three digits, the first one should not be "0", and should less than 256
+                elif i == 3 and s[0] != "0" and int(s[:3]) <= 255:
+                    self.dfs(s[i:], index+1, path+s[:i]+".", res)
+94,Binary Tree Inorder Traversal:
+
+Python recursive and iterative solutions.
+        
+    # recursively
+    def inorderTraversal1(self, root):
+        res = []
+        self.helper(root, res)
+        return res
+        
+    def helper(self, root, res):
+        if root:
+            self.helper(root.left, res)
+            res.append(root.val)
+            self.helper(root.right, res)
+     
+    # iteratively       
+    def inorderTraversal(self, root):
+        res, stack = [], []
+        while True:
+            while root:
+                stack.append(root)
+                root = root.left
+            if not stack:
+                return res
+            node = stack.pop()
+            res.append(node.val)
+            root = node.right
+95,Unique Binary Search Trees II:
+
+DP solution in Python
+----------
+
+class Solution:
+    # @return a list of tree node
+
+    def generateTrees(self, n):
+        if n == 0:
+            return [None]
+        tree_list = [[[None]] * (n + 2) for i in range(n + 2)]
+        for i in range(1, n + 1):
+            tree_list[i][i] = [TreeNode(i)]
+            for j in reversed(range(1, i)):
+                tree_list[j][i] = []
+                for k in range(j, i + 1):
+                    for left in tree_list[j][k - 1]:
+                        for right in tree_list[k + 1][i]:
+                            root = TreeNode(k)
+                            (root.left, root.right) = (left, right)
+                            tree_list[j][i].append(root)
+        return tree_list[1][n]
+96,Unique Binary Search Trees:
+
+Python solutions (DP + Catalan number)
+   
+    # DP
+    def numTrees1(self, n):
+        res = [0] * (n+1)
+        res[0] = 1
+        for i in xrange(1, n+1):
+            for j in xrange(i):
+                res[i] += res[j] * res[i-1-j]
+        return res[n]
+     
+    # Catalan Number  (2n)!/((n+1)!*n!)  
+    def numTrees(self, n):
+        return math.factorial(2*n)/(math.factorial(n)*math.factorial(n+1))
+97,Interleaving String:
+
+Python DP solutions (O(m*n), O(n) space), BFS, DFS.
+    
+    # O(m*n) space
+    def isInterleave1(self, s1, s2, s3):
+        r, c, l= len(s1), len(s2), len(s3)
+        if r+c != l:
+            return False
+        dp = [[True for _ in xrange(c+1)] for _ in xrange(r+1)]
+        for i in xrange(1, r+1):
+            dp[i][0] = dp[i-1][0] and s1[i-1] == s3[i-1]
+        for j in xrange(1, c+1):
+            dp[0][j] = dp[0][j-1] and s2[j-1] == s3[j-1]
+        for i in xrange(1, r+1):
+            for j in xrange(1, c+1):
+                dp[i][j] = (dp[i-1][j] and s1[i-1] == s3[i-1+j]) or \
+                   (dp[i][j-1] and s2[j-1] == s3[i-1+j])
+        return dp[-1][-1]
+
+    # O(2*n) space
+    def isInterleave2(self, s1, s2, s3):
+        l1, l2, l3 = len(s1)+1, len(s2)+1, len(s3)+1
+        if l1+l2 != l3+1:
+            return False
+        pre = [True for _ in xrange(l2)]
+        for j in xrange(1, l2):
+            pre[j] = pre[j-1] and s2[j-1] == s3[j-1]
+        for i in xrange(1, l1):
+            cur = [pre[0] and s1[i-1] == s3[i-1]] * l2
+            for j in xrange(1, l2):
+                cur[j] = (cur[j-1] and s2[j-1] == s3[i+j-1]) or \
+                         (pre[j] and s1[i-1] == s3[i+j-1])
+            pre = cur[:]
+        return pre[-1]
+    
+    # O(n) space
+    def isInterleave3(self, s1, s2, s3):
+        r, c, l= len(s1), len(s2), len(s3)
+        if r+c != l:
+            return False
+        dp = [True for _ in xrange(c+1)] 
+        for j in xrange(1, c+1):
+            dp[j] = dp[j-1] and s2[j-1] == s3[j-1]
+        for i in xrange(1, r+1):
+            dp[0] = (dp[0] and s1[i-1] == s3[i-1])
+            for j in xrange(1, c+1):
+                dp[j] = (dp[j] and s1[i-1] == s3[i-1+j]) or (dp[j-1] and s2[j-1] == s3[i-1+j])
+        return dp[-1]
+        
+    # DFS 
+    def isInterleave4(self, s1, s2, s3):
+        r, c, l= len(s1), len(s2), len(s3)
+        if r+c != l:
+            return False
+        stack, visited = [(0, 0)], set((0, 0))
+        while stack:
+            x, y = stack.pop()
+            if x+y == l:
+                return True
+            if x+1 <= r and s1[x] == s3[x+y] and (x+1, y) not in visited:
+                stack.append((x+1, y)); visited.add((x+1, y))
+            if y+1 <= c and s2[y] == s3[x+y] and (x, y+1) not in visited:
+                stack.append((x, y+1)); visited.add((x, y+1))
+        return False
+                
+    # BFS 
+    def isInterleave(self, s1, s2, s3):
+        r, c, l= len(s1), len(s2), len(s3)
+        if r+c != l:
+            return False
+        queue, visited = [(0, 0)], set((0, 0))
+        while queue:
+            x, y = queue.pop(0)
+            if x+y == l:
+                return True
+            if x+1 <= r and s1[x] == s3[x+y] and (x+1, y) not in visited:
+                queue.append((x+1, y)); visited.add((x+1, y))
+            if y+1 <= c and s2[y] == s3[x+y] and (x, y+1) not in visited:
+                queue.append((x, y+1)); visited.add((x, y+1))
+        return False
+98,Validate Binary Search Tree:
+
+Python version based on inorder traversal
+    # Definition for a  binary tree node
+    # class TreeNode:
+    #     def __init__(self, x):
+    #         self.val = x
+    #         self.left = None
+    #         self.right = None
+    
+    class Solution:
+        # @param root, a tree node
+        # @return a boolean
+        # 7:38
+        def isValidBST(self, root):
+            output = []
+            self.inOrder(root, output)
+            
+            for i in range(1, len(output)):
+                if output[i-1] >= output[i]:
+                    return False
+    
+            return True
+    
+        def inOrder(self, root, output):
+            if root is None:
+                return
+            
+            self.inOrder(root.left, output)
+            output.append(root.val)
+            self.inOrder(root.right, output)
+99,Recover Binary Search Tree:
+
+Tree Deserializer and Visualizer for Python
+Wrote some tools for my own local testing. For example `deserialize('[1,2,3,null,null,4,null,null,5]')` will turn that into a tree and return the root [as explained in the FAQ](https://leetcode.com/faq/). I also wrote a visualizer. Two examples:
+
+`drawtree(deserialize('[1,2,3,null,null,4,null,null,5]'))`:
+
+![enter image description here][1]
+
+`drawtree(deserialize('[2,1,3,0,7,9,1,2,null,1,0,null,null,8,8,null,null,null,null,7]'))`:
+
+![enter image description here][2]
+
+Here's the code. If you save it as a Python script and run it, it should as a demo show the above two pictures in turtle windows (one after the other). And you can of course import it from other scripts and then it will only provide the class/functions and not show the demo.
+
+    class TreeNode:
+        def __init__(self, val, left=None, right=None):
+            self.val = val
+            self.left = left
+            self.right = right
+        def __repr__(self):
+            return 'TreeNode({})'.format(self.val)
+        
+    def deserialize(string):
+        if string == '{}':
+            return None
+        nodes = [None if val == 'null' else TreeNode(int(val))
+                 for val in string.strip('[]{}').split(',')]
+        kids = nodes[::-1]
+        root = kids.pop()
+        for node in nodes:
+            if node:
+                if kids: node.left  = kids.pop()
+                if kids: node.right = kids.pop()
+        return root
+    
+    def drawtree(root):
+        def height(root):
+            return 1 + max(height(root.left), height(root.right)) if root else -1
+        def jumpto(x, y):
+            t.penup()
+            t.goto(x, y)
+            t.pendown()
+        def draw(node, x, y, dx):
+            if node:
+                t.goto(x, y)
+                jumpto(x, y-20)
+                t.write(node.val, align='center', font=('Arial', 12, 'normal'))
+                draw(node.left, x-dx, y-60, dx/2)
+                jumpto(x, y-20)
+                draw(node.right, x+dx, y-60, dx/2)
+        import turtle
+        t = turtle.Turtle()
+        t.speed(0); turtle.delay(0)
+        h = height(root)
+        jumpto(0, 30*h)
+        draw(root, 0, 30*h, 40*h)
+        t.hideturtle()
+        turtle.mainloop()
+        
+    if __name__ == '__main__':
+        drawtree(deserialize('[1,2,3,null,null,4,null,null,5]'))
+        drawtree(deserialize('[2,1,3,0,7,9,1,2,null,1,0,null,null,8,8,null,null,null,null,7]'))
+
+  [1]: http://pochmann.org/leetcode/images/tree1.png
+  [2]: http://pochmann.org/leetcode/images/tree2.png
+
+100,Same Tree:
+
+Shortest+simplest Python
+The "proper" way:
+
+    class Solution:
+        def isSameTree(self, p, q):
+            if p and q:
+                return p.val == q.val and self.isSameTree(p.left, q.left) and self.isSameTree(p.right, q.right)
+            return p == q
+
+The "tupleify" way:
+
+    class Solution:
+        def isSameTree(self, p, q):
+            def t(n):
+                return n and (n.val, t(n.left), t(n.right))
+            return t(p) == t(q)
+101,Symmetric Tree:
+
+Recursively and iteratively solution in Python
+Basically, this question is recursively. Or we can say, the tree structure is recursively, so the recursively solution maybe easy to write:
+
+TC: O(b) SC: O(log n)
+
+    class Solution:
+      def isSymmetric(self, root):
+        if root is None:
+          return True
+        else:
+          return self.isMirror(root.left, root.right)
+
+      def isMirror(self, left, right):
+        if left is None and right is None:
+          return True
+        if left is None or right is None:
+          return False
+
+        if left.val == right.val:
+          outPair = self.isMirror(left.left, right.right)
+          inPiar = self.isMirror(left.right, right.left)
+          return outPair and inPiar
+        else:
+          return False
+
+The essence of recursively is Stack, so we can use our own stack to rewrite it into iteratively:
+
+     class Solution2:
+      def isSymmetric(self, root):
+        if root is None:
+          return True
+
+        stack = [[root.left, root.right]]
+
+        while len(stack) > 0:
+          pair = stack.pop(0)
+          left = pair[0]
+          right = pair[1]
+
+          if left is None and right is None:
+            continue
+          if left is None or right is None:
+            return False
+          if left.val == right.val:
+            stack.insert(0, [left.left, right.right])
+
+            stack.insert(0, [left.right, right.left])
+          else:
+            return False
+        return True
+
+
+102,Binary Tree Level Order Traversal:
+
+Python recursive solution
+    class Solution(object):
+    def __init__(self):
+        self.l=[]
+    def helper(self,root,level):
+        if not root:
+            return None
+        else:
+            if level<len(self.l):
+                self.l[level].append(root.val)
+            else:
+                self.l.append([root.val])
+            self.helper(root.left,level+1)
+            self.helper(root.right,level+1)
+        return self.l
+    def levelOrder(self, root):
+        """
+        :type root: TreeNode
+        :rtype: List[List[int]]
+        """
+        if not root:
+            return []
+        return self.helper(root,0)
+103,Binary Tree Zigzag Level Order Traversal:
+
+Python simple BFS
+Simple straightforward solution using flag to decide whether from left to right or from right to left
+
+    class Solution(object):
+    def zigzagLevelOrder(self, root):
+        """
+        :type root: TreeNode
+        :rtype: List[List[int]]
+        """
+        if not root: return []
+        res, temp, stack, flag=[], [], [root], 1
+        while stack:
+            for i in xrange(len(stack)):
+                node=stack.pop(0)
+                temp+=[node.val]
+                if node.left: stack+=[node.left]
+                if node.right: stack+=[node.right]
+            res+=[temp[::flag]]
+            temp=[]
+            flag*=-1
+        return res
+104,Maximum Depth of Binary Tree:
+
+1 line Ruby and Python
+Just a bit shorter/different than previous solutions.
+
+Ruby:
+
+    def max_depth(root)
+      root ? 1 + [max_depth(root.left), max_depth(root.right)].max : 0
+    end
+
+Python:
+
+    def maxDepth(self, root):
+        return 1 + max(map(self.maxDepth, (root.left, root.right))) if root else 0
+
+105,Construct Binary Tree from Preorder and Inorder Traversal:
+
+Python short recursive solution.
+        
+    def buildTree(self, preorder, inorder):
+        if inorder:
+            ind = inorder.index(preorder.pop(0))
+            root = TreeNode(inorder[ind])
+            root.left = self.buildTree(preorder, inorder[0:ind])
+            root.right = self.buildTree(preorder, inorder[ind+1:])
+            return root
+106,Construct Binary Tree from Inorder and Postorder Traversal:
+
+A Python recursive solution
+    # Definition for a  binary tree node
+    # class TreeNode:
+    #     def __init__(self, x):
+    #         self.val = x
+    #         self.left = None
+    #         self.right = None
+    
+    class Solution:
+        # @param inorder, a list of integers
+        # @param postorder, a list of integers
+        # @return a tree node
+        # 12:00
+        def buildTree(self, inorder, postorder):
+            if not inorder or not postorder:
+                return None
+            
+            root = TreeNode(postorder.pop())
+            inorderIndex = inorder.index(root.val)
+    
+            root.right = self.buildTree(inorder[inorderIndex+1:], postorder)
+            root.left = self.buildTree(inorder[:inorderIndex], postorder)
+    
+            return root
+            
+107,Binary Tree Level Order Traversal II:
+
+Python solutions (dfs recursively, dfs+stack, bfs+queue).
+        
+    # dfs recursively
+    def levelOrderBottom1(self, root):
+        res = []
+        self.dfs(root, 0, res)
+        return res
+    
+    def dfs(self, root, level, res):
+        if root:
+            if len(res) < level + 1:
+                res.insert(0, [])
+            res[-(level+1)].append(root.val)
+            self.dfs(root.left, level+1, res)
+            self.dfs(root.right, level+1, res)
+            
+    # dfs + stack
+    def levelOrderBottom2(self, root):
+        stack = [(root, 0)]
+        res = []
+        while stack:
+            node, level = stack.pop()
+            if node:
+                if len(res) < level+1:
+                    res.insert(0, [])
+                res[-(level+1)].append(node.val)
+                stack.append((node.right, level+1))
+                stack.append((node.left, level+1))
+        return res
+     
+    # bfs + queue   
+    def levelOrderBottom(self, root):
+        queue, res = collections.deque([(root, 0)]), []
+        while queue:
+            node, level = queue.popleft()
+            if node:
+                if len(res) < level+1:
+                    res.insert(0, [])
+                res[-(level+1)].append(node.val)
+                queue.append((node.left, level+1))
+                queue.append((node.right, level+1))
+        return res
+108,Convert Sorted Array to Binary Search Tree:
+
+An easy Python solution
+The idea is to find the root first, then recursively build each left and right subtree
+
+    # Definition for a  binary tree node
+    # class TreeNode:
+    #     def __init__(self, x):
+    #         self.val = x
+    #         self.left = None
+    #         self.right = None
+    
+    class Solution:
+        # @param num, a list of integers
+        # @return a tree node
+        # 12:37
+        def sortedArrayToBST(self, num):
+            if not num:
+                return None
+    
+            mid = len(num) // 2
+    
+            root = TreeNode(num[mid])
+            root.left = self.sortedArrayToBST(num[:mid])
+            root.right = self.sortedArrayToBST(num[mid+1:])
+    
+            return root
+109,Convert Sorted List to Binary Search Tree:
+
+Python recursive solution with detailed comments (operate linked-list directly).
+        
+    # recursively
+    def sortedListToBST(self, head):
+        if not head:
+            return 
+        if not head.next:
+            return TreeNode(head.val)
+        # here we get the middle point,
+        # even case, like '1234', slow points to '2',
+        # '3' is root, '12' belongs to left, '4' is right
+        # odd case, like '12345', slow points to '2', '12'
+        # belongs to left, '3' is root, '45' belongs to right
+        slow, fast = head, head.next.next
+        while fast and fast.next:
+            fast = fast.next.next
+            slow = slow.next
+        # tmp points to root
+        tmp = slow.next
+        # cut down the left child
+        slow.next = None
+        root = TreeNode(tmp.val)
+        root.left = self.sortedListToBST(head)
+        root.right = self.sortedListToBST(tmp.next)
+        return root
+110,Balanced Binary Tree:
+
+VERY SIMPLE Python solution, beats 90%
+    class Solution(object):
+        def isBalanced(self, root):
+            
+            def check(root):
+                if root is None:
+                    return 0
+                left  = check(root.left)
+                right = check(root.right)
+                if left == -1 or right == -1 or abs(left - right) > 1:
+                    return -1
+                return 1 + max(left, right)
+            
+            return check(root) != -1 
+112,Path Sum:
+
+Short Python recursive solution - O(n)
+    # Definition for a  binary tree node
+    # class TreeNode:
+    #     def __init__(self, x):
+    #         self.val = x
+    #         self.left = None
+    #         self.right = None
+    
+    class Solution:
+        # @param root, a tree node
+        # @param sum, an integer
+        # @return a boolean
+        # 1:27
+        def hasPathSum(self, root, sum):
+            if not root:
+                return False
+    
+            if not root.left and not root.right and root.val == sum:
+                return True
+            
+            sum -= root.val
+    
+            return self.hasPathSum(root.left, sum) or self.hasPathSum(root.right, sum)
+113,Path Sum II:
+
+Python solutions (Recursively, BFS+queue, DFS+stack)
+    def pathSum(self, root, sum):
+        if not root:
+            return []
+        res = []
+        self.dfs(root, sum, [], res)
+        return res
+        
+    def dfs(self, root, sum, ls, res):
+        if not root.left and not root.right and sum == root.val:
+            ls.append(root.val)
+            res.append(ls)
+        if root.left:
+            self.dfs(root.left, sum-root.val, ls+[root.val], res)
+        if root.right:
+            self.dfs(root.right, sum-root.val, ls+[root.val], res)
+            
+    def pathSum2(self, root, sum):
+        if not root:
+            return []
+        if not root.left and not root.right and sum == root.val:
+            return [[root.val]]
+        tmp = self.pathSum(root.left, sum-root.val) + self.pathSum(root.right, sum-root.val)
+        return [[root.val]+i for i in tmp]
+    
+    # BFS + queue    
+    def pathSum3(self, root, sum): 
+        if not root:
+            return []
+        res = []
+        queue = [(root, root.val, [root.val])]
+        while queue:
+            curr, val, ls = queue.pop(0)
+            if not curr.left and not curr.right and val == sum:
+                res.append(ls)
+            if curr.left:
+                queue.append((curr.left, val+curr.left.val, ls+[curr.left.val]))
+            if curr.right:
+                queue.append((curr.right, val+curr.right.val, ls+[curr.right.val]))
+        return res
+        
+    # DFS + stack I  
+    def pathSum4(self, root, sum): 
+        if not root:
+            return []
+        res = []
+        stack = [(root, sum-root.val, [root.val])]
+        while stack:
+            curr, val, ls = stack.pop()
+            if not curr.left and not curr.right and val == 0:
+                res.append(ls)
+            if curr.right:
+                stack.append((curr.right, val-curr.right.val, ls+[curr.right.val]))
+            if curr.left:
+                stack.append((curr.left, val-curr.left.val, ls+[curr.left.val]))
+        return res 
+    
+    # DFS + stack II   
+    def pathSum5(self, root, s): 
+        if not root:
+            return []
+        res = []
+        stack = [(root, [root.val])]
+        while stack:
+            curr, ls = stack.pop()
+            if not curr.left and not curr.right and sum(ls) == s:
+                res.append(ls)
+            if curr.right:
+                stack.append((curr.right, ls+[curr.right.val]))
+            if curr.left:
+                stack.append((curr.left, ls+[curr.left.val]))
+        return res    
+115,Distinct Subsequences:
+
+Python dp solutions (O(m*n), O(n) space).
+    
+    # O(m*n) space 
+    def numDistinct1(self, s, t):
+        l1, l2 = len(s)+1, len(t)+1
+        dp = [[1] * l2 for _ in xrange(l1)]
+        for j in xrange(1, l2):
+            dp[0][j] = 0
+        for i in xrange(1, l1):
+            for j in xrange(1, l2):
+                dp[i][j] = dp[i-1][j] + dp[i-1][j-1]*(s[i-1] == t[j-1])
+        return dp[-1][-1]
+      
+    # O(n) space  
+    def numDistinct(self, s, t):
+        l1, l2 = len(s)+1, len(t)+1
+        cur = [0] * l2
+        cur[0] = 1
+        for i in xrange(1, l1):
+            pre = cur[:]
+            for j in xrange(1, l2):
+                cur[j] = pre[j] + pre[j-1]*(s[i-1] == t[j-1])
+        return cur[-1]
+116,Populating Next Right Pointers in Each Node:
+
+Python accepted code
+    def connect(self, root):
+        if not root: return
+        while root.left:
+            cur = root.left
+            prev = None
+            while root:
+                if prev: prev.next = root.left
+                root.left.next = root.right
+                prev = root.right
+                root = root.next
+            root = cur
+117,Populating Next Right Pointers in Each Node II:
+
+AC Python O(1) space solution 12 lines and easy to understand
+The algorithm is a BFS or level order traversal. We go through the tree level by level. node is the pointer in the parent level, tail is the tail pointer in the child level.
+The parent level can be view as a singly linked list or queue, which we can traversal easily with a pointer.
+Connect the tail with every one of the possible nodes in child level, update it only if the connected node is not nil.
+Do this one level by one level. The whole thing is quite straightforward.
+
+**Python**
+
+    def connect(self, node):
+        tail = dummy = TreeLinkNode(0)
+        while node:
+            tail.next = node.left
+            if tail.next:
+                tail = tail.next
+            tail.next = node.right
+            if tail.next:
+                tail = tail.next
+            node = node.next
+            if not node:
+                tail = dummy
+                node = dummy.next
+
+
+    # 61 / 61 test cases passed.
+    # Status: Accepted
+    # Runtime: 100 ms
+    # 95.26%
+
+
+

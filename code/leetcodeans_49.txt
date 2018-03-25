@@ -1,0 +1,1505 @@
+1,Two Sum:
+
+Here is a Python solution in O(n) time
+    class Solution(object):
+        def twoSum(self, nums, target):
+            """
+            :type nums: List[int]
+            :type target: int
+            :rtype: List[int]
+            """
+            if len(nums) <= 1:
+                return False
+            buff_dict = {}
+            for i in range(len(nums)):
+                if nums[i] in buff_dict:
+                    return [buff_dict[nums[i]], i+1]
+                else:
+                    buff_dict[target - nums[i]] = i+1
+2,Add Two Numbers:
+
+Python concise solution.
+        
+    def addTwoNumbers(self, l1, l2):
+        dummy = cur = ListNode(0)
+        carry = 0
+        while l1 or l2 or carry:
+            if l1:
+                carry += l1.val
+                l1 = l1.next
+            if l2:
+                carry += l2.val
+                l2 = l2.next
+            cur.next = ListNode(carry%10)
+            cur = cur.next
+            carry //= 10
+        return dummy.next
+3,Longest Substring Without Repeating Characters:
+
+A Python solution - 85ms - O(n)
+    class Solution:
+        # @return an integer
+        def lengthOfLongestSubstring(self, s):
+            start = maxLength = 0
+            usedChar = {}
+            
+            for i in range(len(s)):
+                if s[i] in usedChar and start <= usedChar[s[i]]:
+                    start = usedChar[s[i]] + 1
+                else:
+                    maxLength = max(maxLength, i - start + 1)
+    
+                usedChar[s[i]] = i
+    
+            return maxLength
+4,Median of Two Sorted Arrays:
+
+Intuitive Python O(log (m+n)) solution, by kth smallest in the two sorted arrays, 252ms
+The idea is in the comment:
+
+     
+    def findMedianSortedArrays(self, A, B):
+        l = len(A) + len(B)
+        if l % 2 == 1:
+            return self.kth(A, B, l // 2)
+        else:
+            return (self.kth(A, B, l // 2) + self.kth(A, B, l // 2 - 1)) / 2.   
+        
+    def kth(self, a, b, k):
+        if not a:
+            return b[k]
+        if not b:
+            return a[k]
+        ia, ib = len(a) // 2 , len(b) // 2
+        ma, mb = a[ia], b[ib]
+        
+        # when k is bigger than the sum of a and b's median indices 
+        if ia + ib < k:
+            # if a's median is bigger than b's, b's first half doesn't include k
+            if ma > mb:
+                return self.kth(a, b[ib + 1:], k - ib - 1)
+            else:
+                return self.kth(a[ia + 1:], b, k - ia - 1)
+        # when k is smaller than the sum of a and b's indices
+        else:
+            # if a's median is bigger than b's, a's second half doesn't include k
+            if ma > mb:
+                return self.kth(a[:ia], b, k)
+            else:
+                return self.kth(a, b[:ib], k)
+5,Longest Palindromic Substring:
+
+Python O(n^2) method with some optimization, 88ms.
+Basic thought is simple.  when you increase s by 1 character, you could only increase maxPalindromeLen by 1 or 2, and that new maxPalindrome includes this new character.  Proof: if on adding 1 character, maxPalindromeLen increased by 3 or more, say the new maxPalindromeLen  is Q, and the old maxPalindromeLen  is P, and Q>=P+3. Then it would mean, even without this new character, there would be a palindromic substring ending in the last character, whose length is at least Q-2. Since Q-2 would be >P, this contradicts the condition that P is the maxPalindromeLen without the additional character.
+
+So, it becomes simple, you only need to scan from beginning to the end, adding one character at a time, keeping track of maxPalindromeLen, and for each added character, you check if the substrings ending with this new character, with length P+1 or P+2, are palindromes, and update accordingly.
+
+Now, this is O(n^2) as taking substrings and checking palindromicity seem O(n) time.  We can speed up it by realizing that strings are immutable, and there are memory slicing tricks will help to speed these operations up.  comparing string equality with "==" is O(1), and using slicing to substring and reverse is  ̶a̶l̶s̶o̶ ̶O̶(̶1̶)̶ ̶(̶n̶o̶t̶ ̶t̶o̶t̶a̶l̶l̶y̶ ̶s̶u̶r̶e̶ ̶a̶b̶o̶u̶t̶ ̶t̶h̶e̶ ̶s̶l̶i̶c̶i̶n̶g̶ ̶t̶h̶o̶u̶g̶h̶.̶ ̶ ̶I̶ ̶t̶h̶i̶n̶k̶ ̶i̶t̶ ̶i̶s̶ ̶O̶(̶1̶)̶,̶ ̶b̶u̶t̶ ̶c̶o̶u̶l̶d̶ ̶n̶o̶t̶ ̶f̶i̶n̶d̶ ̶a̶n̶y̶ ̶s̶o̶l̶i̶d̶ ̶l̶i̶t̶e̶r̶a̶t̶u̶r̶e̶ ̶a̶b̶o̶u̶t̶ ̶i̶t̶.̶   O(n) (thanks to ChuntaoLu).  But as slicing is optimized by the interpreter's C code, it should run pretty fast.  I'm pretty new to Python.  Would appreciate you would give more insights or further optimization.
+
+Thus, here is the O(n) method:
+
+	class Solution:
+	    # @return a string
+	    def longestPalindrome(self, s):
+	        if len(s)==0:
+	        	return 0
+	        maxLen=1
+	        start=0
+	        for i in xrange(len(s)):
+	        	if i-maxLen >=1 and s[i-maxLen-1:i+1]==s[i-maxLen-1:i+1][::-1]:
+	        		start=i-maxLen-1
+	        		maxLen+=2
+	        		continue
+
+	        	if i-maxLen >=0 and s[i-maxLen:i+1]==s[i-maxLen:i+1][::-1]:
+	        		start=i-maxLen
+	        		maxLen+=1
+	        return s[start:start+maxLen]
+
+
+6,ZigZag Conversion:
+
+Python O(n) Solution in 96ms (99.43%)
+    class Solution(object):
+        def convert(self, s, numRows):
+            """
+            :type s: str
+            :type numRows: int
+            :rtype: str
+            """
+            if numRows == 1 or numRows >= len(s):
+                return s
+    
+            L = [''] * numRows
+            index, step = 0, 1
+    
+            for x in s:
+                L[index] += x
+                if index == 0:
+                    step = 1
+                elif index == numRows -1:
+                    step = -1
+                index += step
+    
+            return ''.join(L)
+
+
+7,Reverse Integer:
+
+Golfing in Python
+Get the `s`ign, get the `r`eversed absolute integer, and return their product if `r` didn't "overflow".
+
+    def reverse(self, x):
+        s = cmp(x, 0)
+        r = int(`s*x`[::-1])
+        return s*r * (r < 2**31)
+
+As compressed one-liner, for potential comparison:
+
+    def reverse(self, x):
+        s=cmp(x,0);r=int(`s*x`[::-1]);return(r<2**31)*s*r
+
+Anybody got something shorter?
+8,String to Integer (atoi):
+
+Python solution based on RegEx
+    class Solution:
+        # @return an integer
+        def atoi(self, str):
+            str = str.strip()
+            str = re.findall('(^[\+\-0]*\d+)\D*', str)
+    
+            try:
+                result = int(''.join(str))
+                MAX_INT = 2147483647
+                MIN_INT = -2147483648
+                if result > MAX_INT > 0:
+                    return MAX_INT
+                elif result < MIN_INT < 0:
+                    return MIN_INT
+                else:
+                    return result
+            except:
+                return 0
+9,Palindrome Number:
+
+Python solution based on the algorithm in leetcode blog
+    class Solution:
+        # @param x, an integer
+        # @return a boolean
+        def isPalindrome(self, x):
+            if x < 0:
+                return False
+    
+            ranger = 1
+            while x / ranger >= 10:
+                ranger *= 10
+    
+            while x:
+                left = x / ranger
+                right = x % 10
+                if left != right:
+                    return False
+                
+                x = (x % ranger) / 10
+                ranger /= 100
+    
+            return True
+            
+10,Regular Expression Matching:
+
+My DP approach in Python with comments and unittest
+I shared my DP approach with comments and provided some unit tests for it. Some statements in the approach directly affect some corner cases, for example, comment out line 22-23, then the unittest `test_symbol_0` will fail. Hope this script helps us better understand the problem.
+
+    import unittest
+    
+    
+    class Solution(object):
+        def isMatch(self, s, p):
+            # The DP table and the string s and p use the same indexes i and j, but
+            # table[i][j] means the match status between p[:i] and s[:j], i.e.
+            # table[0][0] means the match status of two empty strings, and
+            # table[1][1] means the match status of p[0] and s[0]. Therefore, when
+            # refering to the i-th and the j-th characters of p and s for updating
+            # table[i][j], we use p[i - 1] and s[j - 1].
+    
+            # Initialize the table with False. The first row is satisfied.
+            table = [[False] * (len(s) + 1) for _ in range(len(p) + 1)]
+    
+            # Update the corner case of matching two empty strings.
+            table[0][0] = True
+    
+            # Update the corner case of when s is an empty string but p is not.
+            # Since each '*' can eliminate the charter before it, the table is
+            # vertically updated by the one before previous. [test_symbol_0]
+            for i in range(2, len(p) + 1):
+                table[i][0] = table[i - 2][0] and p[i - 1] == '*'
+    
+            for i in range(1, len(p) + 1):
+                for j in range(1, len(s) + 1):
+                    if p[i - 1] != "*":
+                        # Update the table by referring the diagonal element.
+                        table[i][j] = table[i - 1][j - 1] and \
+                                      (p[i - 1] == s[j - 1] or p[i - 1] == '.')
+                    else:
+                        # Eliminations (referring to the vertical element)
+                        # Either refer to the one before previous or the previous.
+                        # I.e. * eliminate the previous or count the previous.
+                        # [test_symbol_1]
+                        table[i][j] = table[i - 2][j] or table[i - 1][j]
+    
+                        # Propagations (referring to the horizontal element)
+                        # If p's previous one is equal to the current s, with
+                        # helps of *, the status can be propagated from the left.
+                        # [test_symbol_2]
+                        if p[i - 2] == s[j - 1] or p[i - 2] == '.':
+                            table[i][j] |= table[i][j - 1]
+    
+            return table[-1][-1]
+    
+    
+    class TestSolution(unittest.TestCase):
+        def test_none_0(self):
+            s = ""
+            p = ""
+            self.assertTrue(Solution().isMatch(s, p))
+    
+        def test_none_1(self):
+            s = ""
+            p = "a"
+            self.assertFalse(Solution().isMatch(s, p))
+    
+        def test_no_symbol_equal(self):
+            s = "abcd"
+            p = "abcd"
+            self.assertTrue(Solution().isMatch(s, p))
+    
+        def test_no_symbol_not_equal_0(self):
+            s = "abcd"
+            p = "efgh"
+            self.assertFalse(Solution().isMatch(s, p))
+    
+        def test_no_symbol_not_equal_1(self):
+            s = "ab"
+            p = "abb"
+            self.assertFalse(Solution().isMatch(s, p))
+    
+        def test_symbol_0(self):
+            s = ""
+            p = "a*"
+            self.assertTrue(Solution().isMatch(s, p))
+    
+        def test_symbol_1(self):
+            s = "a"
+            p = "ab*"
+            self.assertTrue(Solution().isMatch(s, p))
+    
+        def test_symbol_2(self):
+            # E.g.
+            #   s a b b
+            # p 1 0 0 0
+            # a 0 1 0 0
+            # b 0 0 1 0
+            # * 0 1 1 1
+            s = "abb"
+            p = "ab*"
+            self.assertTrue(Solution().isMatch(s, p))
+    
+    
+    if __name__ == "__main__":
+        unittest.main()
+
+12,Integer to Roman:
+
+Share My Python Solution 96ms
+    M = ["", "M", "MM", "MMM"];
+    C = ["", "C", "CC", "CCC", "CD", "D", "DC", "DCC", "DCCC", "CM"];
+    X = ["", "X", "XX", "XXX", "XL", "L", "LX", "LXX", "LXXX", "XC"];
+    I = ["", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX"];
+    return M[num/1000] + C[(num%1000)/100] + X[(num%100)/10] + I[num%10];
+13,Roman to Integer:
+
+My Straightforward Python Solution
+
+    class Solution:
+    # @param {string} s
+    # @return {integer}
+    def romanToInt(self, s):
+        roman = {'M': 1000,'D': 500 ,'C': 100,'L': 50,'X': 10,'V': 5,'I': 1}
+        z = 0
+        for i in range(0, len(s) - 1):
+            if roman[s[i]] < roman[s[i+1]]:
+                z -= roman[s[i]]
+            else:
+                z += roman[s[i]]
+        return z + roman[s[-1]]
+
+
+*Note: The trick is that the last letter is always added. Except the last one, if one letter is less than its latter one, this letter is subtracted. 
+14,Longest Common Prefix:
+
+Simple Python solution
+Might be a bit slow, but here's my relatively elegant Python solution:
+
+    class Solution:
+        # @return a string
+        def longestCommonPrefix(self, strs):
+            if not strs:
+                return ""
+                
+            for i, letter_group in enumerate(zip(*strs)):
+                if len(set(letter_group)) > 1:
+                    return strs[0][:i]
+            else:
+                return min(strs)
+15,3Sum:
+
+Python easy to understand solution (O(n*n) time).
+        
+    def threeSum(self, nums):
+        res = []
+        nums.sort()
+        for i in xrange(len(nums)-2):
+            if i > 0 and nums[i] == nums[i-1]:
+                continue
+            l, r = i+1, len(nums)-1
+            while l < r:
+                s = nums[i] + nums[l] + nums[r]
+                if s < 0:
+                    l +=1 
+                elif s > 0:
+                    r -= 1
+                else:
+                    res.append((nums[i], nums[l], nums[r]))
+                    while l < r and nums[l] == nums[l+1]:
+                        l += 1
+                    while l < r and nums[r] == nums[r-1]:
+                        r -= 1
+                    l += 1; r -= 1
+        return res
+16,3Sum Closest:
+
+Python O(N^2) solution
+    class Solution:
+        # @return an integer
+        def threeSumClosest(self, num, target):
+            num.sort()
+            result = num[0] + num[1] + num[2]
+            for i in range(len(num) - 2):
+                j, k = i+1, len(num) - 1
+                while j < k:
+                    sum = num[i] + num[j] + num[k]
+                    if sum == target:
+                        return sum
+                    
+                    if abs(sum - target) < abs(result - target):
+                        result = sum
+                    
+                    if sum < target:
+                        j += 1
+                    elif sum > target:
+                        k -= 1
+                
+            return result
+17,Letter Combinations of a Phone Number:
+
+Python solution
+    class Solution:
+        # @param {string} digits
+        # @return {string[]}
+        def letterCombinations(self, digits):
+            mapping = {'2': 'abc', '3': 'def', '4': 'ghi', '5': 'jkl', 
+                       '6': 'mno', '7': 'pqrs', '8': 'tuv', '9': 'wxyz'}
+            if len(digits) == 0:
+                return []
+            if len(digits) == 1:
+                return list(mapping[digits[0]])
+            prev = self.letterCombinations(digits[:-1])
+            additional = mapping[digits[-1]]
+            return [s + c for s in prev for c in additional]
+18,4Sum:
+
+Python 140ms beats 100%, and works for N-sum (N>=2)
+The core is to implement a fast 2-pointer to solve 2-sum, and recursion to reduce the N-sum to 2-sum. Some optimization was be made knowing the list is sorted.
+
+    def fourSum(self, nums, target):
+        nums.sort()
+        results = []
+        self.findNsum(nums, target, 4, [], results)
+        return results
+    
+    def findNsum(self, nums, target, N, result, results):
+        if len(nums) < N or N < 2: return
+    
+        # solve 2-sum
+        if N == 2:
+            l,r = 0,len(nums)-1
+            while l < r:
+                if nums[l] + nums[r] == target:
+                    results.append(result + [nums[l], nums[r]])
+                    l += 1
+                    r -= 1
+                    while l < r and nums[l] == nums[l - 1]:
+                        l += 1
+                    while r > l and nums[r] == nums[r + 1]:
+                        r -= 1
+                elif nums[l] + nums[r] < target:
+                    l += 1
+                else:
+                    r -= 1
+        else:
+            for i in range(0, len(nums)-N+1):   # careful about range
+                if target < nums[i]*N or target > nums[-1]*N:  # take advantages of sorted list
+                    break
+                if i == 0 or i > 0 and nums[i-1] != nums[i]:  # recursively reduce N
+                    self.findNsum(nums[i+1:], target-nums[i], N-1, result+[nums[i]], results)
+        return
+
+
+Just revisited and clean the code
+
+
+    def fourSum(self, nums, target):
+        def findNsum(nums, target, N, result, results):
+            if len(nums) < N or N < 2 or target < nums[0]*N or target > nums[-1]*N:  # early termination
+                return
+            if N == 2: # two pointers solve sorted 2-sum problem
+                l,r = 0,len(nums)-1
+                while l < r:
+                    s = nums[l] + nums[r]
+                    if s == target:
+                        results.append(result + [nums[l], nums[r]])
+                        l += 1
+                        while l < r and nums[l] == nums[l-1]:
+                            l += 1
+                    elif s < target:
+                        l += 1
+                    else:
+                        r -= 1
+            else: # recursively reduce N
+                for i in range(len(nums)-N+1):
+                    if i == 0 or (i > 0 and nums[i-1] != nums[i]):
+                        findNsum(nums[i+1:], target-nums[i], N-1, result+[nums[i]], results)
+
+        results = []
+        findNsum(sorted(nums), target, 4, [], results)
+        return results
+19,Remove Nth Node From End of List:
+
+3 short Python solutions
+**Value-Shifting - AC in 64 ms**
+
+My first solution is "cheating" a little. Instead of really removing the nth *node*, I remove the nth *value*. I recursively determine the indexes (counting from back), then shift the values for all indexes larger than n, and then always drop the head.
+
+    class Solution:
+        def removeNthFromEnd(self, head, n):
+            def index(node):
+                if not node:
+                    return 0
+                i = index(node.next) + 1
+                if i > n:
+                    node.next.val = node.val
+                return i
+            index(head)
+            return head.next
+
+---
+
+**Index and Remove - AC in 56 ms**
+
+In this solution I recursively determine the indexes again, but this time my helper function removes the nth node. It returns two values. The index, as in my first solution, and the possibly changed head of the remaining list.
+
+    class Solution:
+        def removeNthFromEnd(self, head, n):
+            def remove(head):
+                if not head:
+                    return 0, head
+                i, head.next = remove(head.next)
+                return i+1, (head, head.next)[i+1 == n]
+            return remove(head)[1]
+
+---
+
+**n ahead - AC in 48 ms**
+
+The standard solution, but without a dummy extra node. Instead, I simply handle the special case of removing the head right after the fast cursor got its head start.
+
+    class Solution:
+        def removeNthFromEnd(self, head, n):
+            fast = slow = head
+            for _ in range(n):
+                fast = fast.next
+            if not fast:
+                return head.next
+            while fast.next:
+                fast = fast.next
+                slow = slow.next
+            slow.next = slow.next.next
+            return head
+
+
+20,Valid Parentheses:
+
+Simple Python solution with stack
+    class Solution:
+        # @return a boolean
+        def isValid(self, s):
+            stack = []
+            dict = {"]":"[", "}":"{", ")":"("}
+            for char in s:
+                if char in dict.values():
+                    stack.append(char)
+                elif char in dict.keys():
+                    if stack == [] or dict[char] != stack.pop():
+                        return False
+                else:
+                    return False
+            return stack == []
+
+It's quite obvious.
+21,Merge Two Sorted Lists:
+
+Python solutions (iteratively, recursively, iteratively in-place).
+        
+    
+    # iteratively
+    def mergeTwoLists1(self, l1, l2):
+        dummy = cur = ListNode(0)
+        while l1 and l2:
+            if l1.val < l2.val:
+                cur.next = l1
+                l1 = l1.next
+            else:
+                cur.next = l2
+                l2 = l2.next
+            cur = cur.next
+        cur.next = l1 or l2
+        return dummy.next
+        
+    # recursively    
+    def mergeTwoLists2(self, l1, l2):
+        if not l1 or not l2:
+            return l1 or l2
+        if l1.val < l2.val:
+            l1.next = self.mergeTwoLists(l1.next, l2)
+            return l1
+        else:
+            l2.next = self.mergeTwoLists(l1, l2.next)
+            return l2
+            
+    # in-place, iteratively        
+    def mergeTwoLists(self, l1, l2):
+        if None in (l1, l2):
+            return l1 or l2
+        dummy = cur = ListNode(0)
+        dummy.next = l1
+        while l1 and l2:
+            if l1.val < l2.val:
+                l1 = l1.next
+            else:
+                nxt = cur.next
+                cur.next = l2
+                tmp = l2.next
+                l2.next = nxt
+                l2 = tmp
+            cur = cur.next
+        cur.next = l1 or l2
+        return dummy.next
+22,Generate Parentheses:
+
+4-7 lines Python
+`p` is the parenthesis-string built so far, `left` and `right` tell the number of left and right parentheses still to add, and `parens` collects the parentheses.
+
+**Solution 1**
+
+I used a few "tricks"... how many can you find? :-)
+
+    def generateParenthesis(self, n):
+        def generate(p, left, right, parens=[]):
+            if left:         generate(p + '(', left-1, right)
+            if right > left: generate(p + ')', left, right-1)
+            if not right:    parens += p,
+            return parens
+        return generate('', n, n)
+
+**Solution 2**
+
+Here I wrote an actual Python generator. I allow myself to put the `yield q` at the end of the line because it's not that bad and because in "real life" I use Python 3 where I just say `yield from generate(...)`.
+
+    def generateParenthesis(self, n):
+        def generate(p, left, right):
+            if right >= left >= 0:
+                if not right:
+                    yield p
+                for q in generate(p + '(', left-1, right): yield q
+                for q in generate(p + ')', left, right-1): yield q
+        return list(generate('', n, n))
+
+**Solution 3**
+
+Improved version of [this](https://leetcode.com/discuss/25725/7-lines-in-python-44-ms). Parameter `open` tells the number of "already opened" parentheses, and I continue the recursion as long as I still have to open parentheses (`n > 0`) and I haven't made a mistake yet (`open >= 0`).
+
+    def generateParenthesis(self, n, open=0):
+        if n > 0 <= open:
+            return ['(' + p for p in self.generateParenthesis(n-1, open+1)] + \
+                   [')' + p for p in self.generateParenthesis(n, open-1)]
+        return [')' * open] * (not n)
+
+23,Merge k Sorted Lists:
+
+Python 133ms solution
+
+    from operator import attrgetter
+    
+    class Solution:
+        # @param a list of ListNode
+        # @return a ListNode
+        def mergeKLists(self, lists):
+            sorted_list = []
+            for head in lists:
+                curr = head
+                while curr is not None:
+                    sorted_list.append(curr)
+                    curr = curr.next
+    
+            sorted_list = sorted(sorted_list, key=attrgetter('val'))
+            for i, node in enumerate(sorted_list):
+                try:
+                    node.next = sorted_list[i + 1]
+                except:
+                    node.next = None
+    
+            if sorted_list:
+                return sorted_list[0]
+            else:
+                return None
+24,Swap Nodes in Pairs:
+
+7-8 lines C++ / Python / Ruby
+Three different implementations of the same algorithm, taking advantage of different strengths of the three languages. I suggest reading all three, even if you don't know all three languages.
+
+All three of course work swap the current node with the next node by rearranging pointers, then move on to the next pair, and repeat until the end of the list.
+
+---
+
+**C++**
+
+Pointer-pointer `pp`  points to the pointer to the current node. So at first, `pp` points to `head`, and later it points to the `next` field of ListNodes. Additionally, for convenience and clarity, pointers `a` and `b` point to the current node and the next node.
+
+We need to go from `*pp == a -> b -> (b->next)` to `*pp == b -> a -> (b->next)`. The first three lines inside the loop do that, setting those three pointers (from right to left). The fourth line moves `pp` to the next pair.
+
+    ListNode* swapPairs(ListNode* head) {
+        ListNode **pp = &head, *a, *b;
+        while ((a = *pp) && (b = a->next)) {
+            a->next = b->next;
+            b->next = a;
+            *pp = b;
+            pp = &(a->next);
+        }
+        return head;
+    }
+
+---
+
+**Python**
+
+Here, `pre` is the previous node. Since the head doesn't have a previous node, I just use `self` instead. Again, `a` is the current node and `b` is the next node.
+
+To go from `pre -> a -> b -> b.next` to `pre -> b -> a -> b.next`, we need to change those three references. Instead of thinking about in what order I change them, I just change all three at once.
+
+    def swapPairs(self, head):
+        pre, pre.next = self, head
+        while pre.next and pre.next.next:
+            a = pre.next
+            b = a.next
+            pre.next, b.next, a.next = b, a, b.next
+            pre = a
+        return self.next
+
+---
+
+**Ruby**
+
+Again, `pre` is the previous node, but here I create a dummy as previous node of the head. And again, `a` is the current node and `b` is the next node. This time I go one node further and call it `c`.
+
+To go from `pre -> a -> b -> c` to `pre -> b -> a -> c`, we need to change those three references. Here I chain the assignments, pretty much directly saying "`pre` points to `b`, which points to `a`, which points to `c`".
+
+    def swap_pairs(head)
+        pre = dummy = ListNode.new 0
+        pre.next = head
+        while a = pre.next and b = a.next
+            c = b.next
+            ((pre.next = b).next = a).next = c
+            pre = a
+        end
+        dummy.next
+    end
+
+25,Reverse Nodes in k-Group:
+
+Succinct iterative Python, O(n) time O(1) space
+Use a dummy head, and
+
+l, r :          define reversing range
+
+pre, cur :  used in reversing, standard reverse linked linked list method
+
+jump :      used to connect last node in previous k-group to first node in following k-group
+
+    def reverseKGroup(self, head, k):
+        dummy = jump = ListNode(0)
+        dummy.next = l = r = head
+        
+        while True:
+            count = 0
+            while r and count < k:   # use r to locate the range
+                r = r.next
+                count += 1
+            if count == k:  # if size k satisfied, reverse the inner linked list
+                pre, cur = r, l
+                for _ in range(k):
+                    cur.next, cur, pre = pre, cur.next, cur  # standard reversing
+                jump.next, jump, l = pre, l, r  # connect two k-groups
+            else:
+                return dummy.next
+26,Remove Duplicates from Sorted Array:
+
+Simple Python solution - O(n)
+    class Solution:
+        # @param a list of integers
+        # @return an integer
+        def removeDuplicates(self, A):
+            if not A:
+                return 0
+    
+            newTail = 0
+    
+            for i in range(1, len(A)):
+                if A[i] != A[newTail]:
+                    newTail += 1
+                    A[newTail] = A[i]
+    
+            return newTail + 1
+27,Remove Element:
+
+Simple Python O(n) two pointer in place solution
+Starting from the left every time we find a value that is the target value we swap it out with an item starting from the right.  We decrement end each time as we know that the final item is the target value and only increment start once we know the value is ok.  Once start reaches end we know all items after that point are the target value so we can stop there.
+
+
+      def removeElement(self, nums, val):
+        start, end = 0, len(nums) - 1
+        while start <= end:
+            if nums[start] == val:
+                nums[start], nums[end], end = nums[end], nums[start], end - 1
+            else:
+                start +=1
+        return start
+28,Implement strStr():
+
+My answer by Python
+    class Solution(object):
+    def strStr(self, haystack, needle):
+        """
+        :type haystack: str
+        :type needle: str
+        :rtype: int
+        """
+        for i in range(len(haystack) - len(needle)+1):
+            if haystack[i:i+len(needle)] == needle:
+                return i
+        return -1
+29,Divide Two Integers:
+
+Fast and simple Python solutions (56ms - 64ms). No Bitwise Operators.
+idea: 
+keep subtracting the new divisor `div` from the remaining `left` and then doubling `div` (by `div += div`). if `left < div`, start from the original divisor. Do these until `left < divisor.`<p>
+
+
+----------
+
+
+    def divide(self, dividend, divisor):     
+        neg=( (dividend < 0) != (divisor < 0) )
+        dividend = left = abs(dividend)
+        divisor  = div  = abs(divisor)
+        Q = 1
+        ans = 0
+        while left >= divisor:
+            left -= div
+            ans  += Q 
+            Q    += Q
+            div  += div
+            if left < div:
+                div = divisor
+                Q = 1
+        if neg:
+            return max(-ans, -2147483648)
+        else:
+            return min(ans, 2147483647)
+
+
+----------
+
+
+Recursive version: 
+
+    def divide(self, dividend, divisor):  
+        neg=( (dividend < 0) != (divisor < 0) )
+        dividend = left = abs(dividend)
+        divisor  = div  = abs(divisor)       
+        if dividend < divisor:
+            return 0
+        Q = 1
+        ans = 0
+        while left >= div:
+            left -= div
+            ans  += Q
+            Q    += Q
+            div  += div
+        if neg:
+            return max(-(ans + self.divide(left, divisor)), -2147483648)
+        else:
+            return min(ans + self.divide(left, divisor), 2147483647) 
+30,Substring with Concatenation of All Words:
+
+AC Python 80ms solution, dictionary and two pointers
+    def _findSubstring(self, l, r, n, k, t, s, req, ans):
+        curr = {}
+        while r + k <= n:
+            w = s[r:r + k]
+            r += k
+            if w not in req:
+                l = r
+                curr.clear()
+            else:
+                curr[w] = curr[w] + 1 if w in curr else 1
+                while curr[w] > req[w]:
+                    curr[s[l:l + k]] -= 1
+                    l += k
+                if r - l == t:
+                    ans.append(l)
+
+    def findSubstring(self, s, words):
+        if not s or not words or not words[0]:
+            return []
+        n = len(s)
+        k = len(words[0])
+        t = len(words) * k
+        req = {}
+        for w in words:
+            req[w] = req[w] + 1 if w in req else 1
+        ans = []
+        for i in xrange(min(k, n - t + 1)):
+            self._findSubstring(i, i, n, k, t, s, req, ans)
+        return ans
+
+
+    # 169 / 169 test cases passed.
+    # Status: Accepted
+    # Runtime: 80 ms
+    # 98.60%
+
+
+First of all consider s as several series of  words with length k starting at [0, k-1]. For example "barfoothe" with k = 3, can be view as ["bar", "foo", "the"] for i=0 and ["arf", "oot"] for i = 1 and ["rfo", "oth"] for i = 2.
+Thus we need to check each  of these series and find out the valid index by definition.
+
+For each series, we just need to check if there exist a range [l, r) where the occurrence or "spectrum" of the words in the range is the same as our given word list's "spectrum". We use dictionary to store the spectrum and maintain it as we loop through s.
+
+collections.Counter class may save a bit of code on updating the counts of the dictionary. However plain dict wins on the speed.
+
+
+
+33,Search in Rotated Sorted Array:
+
+Pretty short C++/Java/Ruby/Python
+Explanation below the codes.
+
+**Ruby:**
+
+    def search(nums, target)
+      i = (0...nums.size).bsearch { |i|
+        (nums[0] <= target) ^ (nums[0] > nums[i]) ^ (target > nums[i])
+      }
+      nums[i || 0] == target ? i : -1
+    end
+
+**Ruby Golf**, just once for fun:
+
+    def search(n, t)
+      i=(0...n.size).bsearch{|i|(n[0]<=t)^(n[0]>n[i])^(t>n[i])};n[i||0]==t ?i:-1
+    end
+
+**Python:**
+
+    def search(self, nums, target):
+        lo, hi = 0, len(nums) - 1
+        while lo < hi:
+            mid = (lo + hi) / 2
+            if (nums[0] > target) ^ (nums[0] > nums[mid]) ^ (target > nums[mid]):
+                lo = mid + 1
+            else:
+                hi = mid
+        return lo if target in nums[lo:lo+1] else -1
+
+**Python using `bisect`:**
+
+    class Solution:
+        def search(self, nums, target):
+            self.__getitem__ = lambda i: \
+                (nums[0] <= target) ^ (nums[0] > nums[i]) ^ (target > nums[i])
+            i = bisect.bisect_left(self, True, 0, len(nums))
+            return i if target in nums[i:i+1] else -1
+
+**C++:**
+
+    int search(vector<int>& nums, int target) {
+        int lo = 0, hi = int(nums.size()) - 1;
+        while (lo < hi) {
+            int mid = (lo + hi) / 2;
+            if ((nums[0] > target) ^ (nums[0] > nums[mid]) ^ (target > nums[mid]))
+                lo = mid + 1;
+            else
+                hi = mid;
+        }
+        return lo == hi && nums[lo] == target ? lo : -1;
+    }
+
+**Java:**
+
+    public int search(int[] nums, int target) {
+        int lo = 0, hi = nums.length - 1;
+        while (lo < hi) {
+            int mid = (lo + hi) / 2;
+            if ((nums[0] > target) ^ (nums[0] > nums[mid]) ^ (target > nums[mid]))
+                lo = mid + 1;
+            else
+                hi = mid;
+        }
+        return lo == hi && nums[lo] == target ? lo : -1;
+    }
+
+---
+
+Explanation
+-
+
+My solutions use binary search guided by the following thoughts:
+
+Remember the array is sorted, except it might drop at one point.
+
+- **If nums[0] <= nums[i]**, then nums[0..i] is sorted (in case of "**==**" it's just one element, and in case of "**<**" there must be a drop elsewhere). So we should keep searching in nums[0..i] if the target lies in this sorted range, i.e., if `nums[0] <= target <= nums[i]`.
+
+- **If nums[i] < nums[0]**, then nums[0..i] contains a drop, and thus nums[i+1..end] is sorted and lies strictly between nums[i] and nums[0]. So we should keep searching in nums[0..i] if the target *doesn't* lie strictly between them, i.e., if `target <= nums[i] < nums[0]` or `nums[i] < nums[0] <= target`
+
+Those three cases look cyclic:
+
+        nums[0] <= target <= nums[i]
+                   target <= nums[i] < nums[0]
+                             nums[i] < nums[0] <= target
+
+So I have the three checks `(nums[0] <= target)`, `(target <= nums[i])` and `(nums[i] < nums[0])`, and I want to know whether exactly two of them are true. They can't all be true or all be false (check it), so I just need to distinguish between "two true" and "one true". Parity is enough for that, so instead of adding them I xor them, which is a bit shorter and particularly helpful in Java and Ruby, because those don't let me add booleans but do let me xor them.
+
+(Actually while developing this I thought of permutations of nums[0], target and nums[i] and the permutation parity and saw those three checks as representing inversions, but I had trouble putting that into words and now find the above explanation much better. But it helped me get there, so I wanted to mention it here.)
+
+34,Search for a Range:
+
+16-line Python solution, symmetric and clean binary search, 52ms
+    def searchRange(self, nums, target):
+        def binarySearchLeft(A, x):
+            left, right = 0, len(A) - 1
+            while left <= right:
+                mid = (left + right) / 2
+                if x > A[mid]: left = mid + 1
+                else: right = mid - 1
+            return left
+
+        def binarySearchRight(A, x):
+            left, right = 0, len(A) - 1
+            while left <= right:
+                mid = (left + right) / 2
+                if x >= A[mid]: left = mid + 1
+                else: right = mid - 1
+            return right
+            
+        left, right = binarySearchLeft(nums, target), binarySearchRight(nums, target)
+        return (left, right) if left <= right else [-1, -1]
+35,Search Insert Position:
+
+Python beats 98%
+    class Solution(object):
+    def searchInsert(self, nums, key):
+        if key > nums[len(nums) - 1]:
+            return len(nums)
+
+        if key < nums[0]:
+            return 0
+
+        l, r = 0, len(nums) - 1
+        while l <= r:
+            m = (l + r)/2
+            if nums[m] > key:
+                r = m - 1
+                if r >= 0:
+                    if nums[r] < key:
+                        return r + 1
+                else:
+                    return 0
+
+            elif nums[m] < key:
+                l = m + 1
+                if l < len(nums):
+                    if nums[l] > key:
+                        return l
+                else:
+                    return len(nums)
+            else:
+                return m
+
+Once the left border is larger than key, than return index. Once the right border is less than key, then return index.
+36,Valid Sudoku:
+
+1-7 lines Python, 4 solutions
+**Idea**
+
+Just go through all you see (like "7 in row 3") and check for duplicates.
+
+**Solution 1**
+
+Using `Counter`. One logical line, seven physical lines.
+
+    def isValidSudoku(self, board):
+        return 1 == max(collections.Counter(
+            x
+            for i, row in enumerate(board)
+            for j, c in enumerate(row)
+            if c != '.'
+            for x in ((c, i), (j, c), (i/3, j/3, c))
+        ).values() + [1])
+
+The ` + [1]` is only for the empty board, where `max` would get an empty list and complain. It's not necessary to get it accepted here, as the empty board isn't among the test cases, but it's good to have.
+
+**Solution 2**
+
+Using `len(set)`.
+
+    def isValidSudoku(self, board):
+        seen = sum(([(c, i), (j, c), (i/3, j/3, c)]
+                    for i, row in enumerate(board)
+                    for j, c in enumerate(row)
+                    if c != '.'), [])
+        return len(seen) == len(set(seen))
+
+**Solution 3**
+
+Using `any`.
+
+    def isValidSudoku(self, board):
+        seen = set()
+        return not any(x in seen or seen.add(x)
+                       for i, row in enumerate(board)
+                       for j, c in enumerate(row)
+                       if c != '.'
+                       for x in ((c, i), (j, c), (i/3, j/3, c)))
+
+**Solution 4**
+
+Iterating a different way.
+
+    def isValidSudoku(self, board):
+        seen = sum(([(c, i), (j, c), (i/3, j/3, c)]
+                    for i in range(9) for j in range(9)
+                    for c in [board[i][j]] if c != '.'), [])
+        return len(seen) == len(set(seen))
+
+37,Sudoku Solver:
+
+Accepted Python solution
+    class Solution:
+        # @param board, a 9x9 2D array
+        # Solve the Sudoku by modifying the input board in-place.
+        # Do not return any value.
+        def solveSudoku(self, board):
+            self.board = board
+            self.solve()
+        
+        def findUnassigned(self):
+            for row in range(9):
+                for col in range(9):
+                    if self.board[row][col] == ".":
+                        return row, col
+            return -1, -1
+        
+        def solve(self):
+            row, col = self.findUnassigned()
+            #no unassigned position is found, puzzle solved
+            if row == -1 and col == -1:
+                return True
+            for num in ["1","2","3","4","5","6","7","8","9"]:
+                if self.isSafe(row, col, num):
+                    self.board[row][col] = num
+                    if self.solve():
+                        return True
+                    self.board[row][col] = "."
+            return False
+                
+        def isSafe(self, row, col, ch):
+            boxrow = row - row%3
+            boxcol = col - col%3
+            if self.checkrow(row,ch) and self.checkcol(col,ch) and self.checksquare(boxrow, boxcol, ch):
+                return True
+            return False
+        
+        def checkrow(self, row, ch):
+            for col in range(9):
+                if self.board[row][col] == ch:
+                    return False
+            return True
+        
+        def checkcol(self, col, ch):
+            for row in range(9):
+                if self.board[row][col] == ch:
+                    return False
+            return True
+           
+        def checksquare(self, row, col, ch):
+            for r in range(row, row+3):
+                for c in range(col, col+3):
+                    if self.board[r][c] == ch:
+                        return False
+            return True
+
+
+It's a simple backtracking solution.
+38,Count and Say:
+
+4-5 lines Python solutions
+**Solution 1** ... using a regular expression
+
+    def countAndSay(self, n):
+        s = '1'
+        for _ in range(n - 1):
+            s = re.sub(r'(.)\1*', lambda m: str(len(m.group(0))) + m.group(1), s)
+        return s
+
+---
+
+**Solution 2** ... using a regular expression
+
+    def countAndSay(self, n):
+        s = '1'
+        for _ in range(n - 1):
+            s = ''.join(str(len(group)) + digit
+                        for group, digit in re.findall(r'((.)\2*)', s))
+        return s
+
+---
+
+**Solution 3** ... using `groupby`
+
+    def countAndSay(self, n):
+        s = '1'
+        for _ in range(n - 1):
+            s = ''.join(str(len(list(group))) + digit
+                        for digit, group in itertools.groupby(s))
+        return s
+
+39,Combination Sum:
+
+Python dfs solution.
+        
+    def combinationSum(self, candidates, target):
+        res = []
+        candidates.sort()
+        self.dfs(candidates, target, 0, [], res)
+        return res
+        
+    def dfs(self, nums, target, index, path, res):
+        if target < 0:
+            return  # backtracking
+        if target == 0:
+            res.append(path)
+            return 
+        for i in xrange(index, len(nums)):
+            self.dfs(nums, target-nums[i], i, path+[nums[i]], res)
+40,Combination Sum II:
+
+DP solution in Python
+I also did it with recursion, turns out the DP solution is 3~4 times faster.
+    
+    def combinationSum2(self, candidates, target):
+        candidates.sort()
+        table = [None] + [set() for i in range(target)]
+        for i in candidates:
+            if i > target:
+                break
+            for j in range(target - i, 0, -1):
+                table[i + j] |= {elt + (i,) for elt in table[j]}
+            table[i].add((i,))
+        return map(list, table[target])
+41,First Missing Positive:
+
+Python O(1) space,  O(n) time solution with explanation
+     def firstMissingPositive(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: int
+         Basic idea:
+        1. for any array whose length is l, the first missing positive must be in range [1,...,l+1], 
+            so we only have to care about those elements in this range and remove the rest.
+        2. we can use the array index as the hash to restore the frequency of each number within 
+             the range [1,...,l+1] 
+        """
+        nums.append(0)
+        n = len(nums)
+        for i in range(len(nums)): #delete those useless elements
+            if nums[i]<0 or nums[i]>=n:
+                nums[i]=0
+        for i in range(len(nums)): #use the index as the hash to record the frequency of each number
+            nums[nums[i]%n]+=n
+        for i in range(1,len(nums)):
+            if nums[i]/n==0:
+                return i
+        return n
+42,Trapping Rain Water:
+
+Share my one pass Python solution with explaination
+For index i, the water volume of i: `vol_i = min(left_max_i, right_max_i) - bar_i`. 
+
+The left_max array from left to right is always non-descending,  the right_max is non-ascending.
+
+Having such observation, we can say:
+
+Given i < j, if left_max_i <= right_max_j: `vol_i = left_max_i - bar_i`, otherwise, `vol_j = right_max_j - bar_j` 
+because, if left_max_i <= right_max_j: `left_max_i <= right_max_j <= right_max_j-1 <= ... <= right_max_i`, then `min(left_max_i, right_max_i)` is always `left_max_i`
+
+Code is pasted.
+
+    def trap(self, bars):
+        if not bars or len(bars) < 3:
+            return 0
+        volume = 0
+        left, right = 0, len(bars) - 1
+        l_max, r_max = bars[left], bars[right]
+        while left < right:
+            l_max, r_max = max(bars[left], l_max), max(bars[right], r_max)
+            if l_max <= r_max:
+                volume += l_max - bars[left]
+                left += 1
+            else:
+                volume += r_max - bars[right]
+                right -= 1
+        return volume
+43,Multiply Strings:
+
+Simple Python solution, 18 lines
+
+    def multiply(num1, num2):
+        product = [0] * (len(num1) + len(num2))
+        pos = len(product)-1
+        
+        for n1 in reversed(num1):
+            tempPos = pos
+            for n2 in reversed(num2):
+                product[tempPos] += int(n1) * int(n2)
+                product[tempPos-1] += product[tempPos]/10
+                product[tempPos] %= 10
+                tempPos -= 1
+            pos -= 1
+            
+        pt = 0
+        while pt < len(product)-1 and product[pt] == 0:
+            pt += 1
+    
+        return ''.join(map(str, product[pt:]))
+44,Wildcard Matching:
+
+Python DP solution
+    class Solution:
+    # @return a boolean
+    def isMatch(self, s, p):
+        length = len(s)
+        if len(p) - p.count('*') > length:
+            return False
+        dp = [True] + [False]*length
+        for i in p:
+            if i != '*':
+                for n in reversed(range(length)):
+                    dp[n+1] = dp[n] and (i == s[n] or i == '?')
+            else:
+                for n in range(1, length+1):
+                    dp[n] = dp[n-1] or dp[n]
+            dp[0] = dp[0] and i == '*'
+        return dp[-1]
+
+dp[n] means the substring s[:n] if match the pattern i
+
+dp[0] means the empty string '' or s[:0] which only match the pattern '*'
+
+use the reversed builtin because for every dp[n+1] we use the previous 'dp'
+
+
+
+add Java O(m*n) version code
+
+    public boolean isMatch(String s, String p) {
+        int count = 0;
+        for (char c : p.toCharArray()) {
+            if (c == '*')
+                count++;
+        }
+        if (p.length() - count > s.length())
+            return false;
+        boolean[][] dp = new boolean[p.length() + 1][s.length() + 1];
+        dp[0][0] = true;
+        for (int j = 1; j <= p.length(); j++) {
+            char pattern = p.charAt(j - 1);
+            dp[j][0] = dp[j - 1][0] && pattern == '*';
+            for (int i = 1; i <= s.length(); i++) {
+                char letter = s.charAt(i - 1);
+                if (pattern != '*') {
+                    dp[j][i] = dp[j - 1][i - 1] && (pattern == '?' || pattern == letter);
+                } else
+                    dp[j][i] = dp[j][i - 1] || dp[j - 1][i];
+            }
+        }
+        return dp[p.length()][s.length()];
+    }
+
+45,Jump Game II:
+
+10-lines C++ (16ms) / Python BFS Solutions with Explanations
+This problem has a nice BFS structure. Let's illustrate it using the example `nums = [2, 3, 1, 1, 4]` in the problem statement. We are initially at position `0`. Then we can move at most `nums[0]` steps from it. So, after one move, we may reach `nums[1] = 3` or `nums[2] = 1`. So these nodes are reachable in `1` move. From these nodes, we can further move to `nums[3] = 1` and `nums[4] = 4`. Now you can see that the target `nums[4] = 4` is reachable in `2` moves. 
+
+Putting these into codes, we keep two pointers `start` and `end` that record the current range of the starting nodes. Each time after we make a move, update `start` to be `end  + 1` and `end` to be the farthest index that can be reached in `1` move from the current `[start, end]`. 
+ 
+To get an accepted solution, it is important to handle all the edge cases. And the following codes handle all of them in a unified way without using the unclean `if` statements :-)
+ 
+----------
+**C++**
+
+    class Solution {
+    public:
+        int jump(vector<int>& nums) {
+            int n = nums.size(), step = 0, start = 0, end = 0;
+            while (end < n - 1) {
+                step++; 
+    			int maxend = end + 1;
+    			for (int i = start; i <= end; i++) {
+                    if (i + nums[i] >= n - 1) return step;
+    				maxend = max(maxend, i + nums[i]);
+    			}
+                start = end + 1;
+                end = maxend;
+            }
+    		return step;
+        }
+    };
+
+----------
+**Python** 
+
+    class Solution:
+        # @param {integer[]} nums
+        # @return {integer}
+        def jump(self, nums):
+            n, start, end, step = len(nums), 0, 0, 0
+            while end < n - 1:
+                step += 1
+                maxend = end + 1
+                for i in range(start, end + 1):
+                    if i + nums[i] >= n - 1:
+                        return step
+                    maxend = max(maxend, i + nums[i])
+                start, end = end + 1, maxend
+            return step
+46,Permutations:
+
+One-Liners in Python
+**Solution 1: *Recursive, take any number as first***
+
+Take any number as the first number and append any permutation of the other numbers.
+
+    def permute(self, nums):
+        return [[n] + p
+                for i, n in enumerate(nums)
+                for p in self.permute(nums[:i] + nums[i+1:])] or [[]]
+
+---
+
+**Solution 2: *Recursive, insert first number anywhere***
+
+Insert the first number anywhere in any permutation of the remaining numbers.
+
+    def permute(self, nums):
+        return nums and [p[:i] + [nums[0]] + p[i:]
+                         for p in self.permute(nums[1:])
+                         for i in range(len(nums))] or [[]]
+
+---
+
+**Solution 3: *Reduce, insert next number anywhere***
+
+Use `reduce` to insert the next number anywhere in the already built permutations.
+
+    def permute(self, nums):
+        return reduce(lambda P, n: [p[:i] + [n] + p[i:]
+                                    for p in P for i in range(len(p)+1)],
+                      nums, [[]])
+
+---
+
+**Solution 4: *Using the library***
+
+    def permute(self, nums):
+        return list(itertools.permutations(nums))
+
+That returns a list of tuples, but the OJ accepts it anyway. If needed, I could easily turn it into a list of lists:
+
+    def permute(self, nums):
+        return map(list, itertools.permutations(nums))
+
+47,Permutations II:
+
+Iterative Python solution without using set, 111ms
+Duplication happens when we insert the duplicated element before and after the same element, to eliminate duplicates, just insert only after the same element.
+
+    
+    def permuteUnique(self, num):
+        if not num:
+            return []
+        num.sort()
+        ret = [[]]
+        for n in num:
+            new_ret = []
+            l = len(ret[-1])
+            for seq in ret:
+                for i in range(l, -1, -1):
+                    if i < l and seq[i] == n:
+                        break
+                    new_ret.append(seq[:i] + [n] + seq[i:])
+            ret = new_ret
+        return ret
+48,Rotate Image:
+
+1 line in Python
+    class Solution(object):
+        def rotate(self, matrix):
+            """
+            :type matrix: List[List[int]]
+            :rtype: void Do not return anything, modify matrix in-place instead.
+            """
+            matrix[::] = zip(*matrix[::-1])
+49,Group Anagrams:
+
+2-line Python solution, AC with 350ms (some useful Python tricks)
+
+
+        def anagrams(self, strs):
+            count = collections.Counter([tuple(sorted(s)) for s in strs])
+            return filter(lambda x: count[tuple(sorted(x))]>1, strs)
+
+
+ - collections.Counter creates a counter object. A counter object is like a specific kind of dictionary where it is build for counting  (objects that hashes to same value)
+ - tuple(sorted(s)) is used here so that anagrams will be hashed to the same value. tuple is used because sorted returns a list which cannot be hashed but tuples can be hashed
+ - filter: selects some elements of the list based on given function (first argument - a lambda function is given here)
+ - lambda function defined here returns True if number of anagrams of that elements is greater than 1
